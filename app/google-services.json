@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1050648396889",
+    "project_id": "gitto-26117",
+    "storage_bucket": "gitto-26117.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050648396889:android:c85ae198f370caf2de9d48",
+        "android_client_info": {
+          "package_name": "com.britishbroadcast.gitto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050648396889-9c7grd49p11av7fsgoch0m5jsj5snnuu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXoHNudAdN_9Kg_bSXFt4b5OZkeNg6gOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050648396889-9c7grd49p11av7fsgoch0m5jsj5snnuu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
