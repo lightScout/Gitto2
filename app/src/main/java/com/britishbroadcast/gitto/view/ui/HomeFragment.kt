@@ -34,19 +34,17 @@ class HomeFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.apply {
-//            userRecyclerview.adapter = userItemAdapter
-//        }
-//
-//        gittoViewModel.getGitUser("lightscout")
-//        val listOwner: MutableList<Owner> = mutableListOf()
-//        gittoViewModel.gittoLiveData.observe(viewLifecycleOwner, Observer {
-//            if(it[0]!=null) {
-//                listOwner.add(it[0].owner)
-//                Log.d("TAG_X", it[0].owner.login)
-//                userItemAdapter.updateOwners(listOwner)
-//            }
-//        })
+        binding.apply {
+            userRecyclerview.adapter = userItemAdapter
+        }
+
+        gittoViewModel.getGitUser("lightscout")
+        val listOwner: MutableList<Owner> = mutableListOf()
+        gittoViewModel.getRepository().gittoLiveData.observe(viewLifecycleOwner, Observer {
+                listOwner.add(it[0].owner)
+                Log.d("TAG_X", it[0].owner.login)
+                userItemAdapter.updateOwners(listOwner)
+        })
 
 
 

@@ -13,20 +13,20 @@ class GittoRepository {
     private val gittoRetrofit = GittoRetrofit()
 
     private val compositeDisposable = CompositeDisposable()
+    var gittoLiveData = MutableLiveData<GitResponse>()
 
-    fun getUserName(userName: String): GitResponse{
-        var gitResponse = GitResponse()
+    fun getUserName(userName: String){
         compositeDisposable.add(
             gittoRetrofit.getGitUser(userName)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    gitResponse = it
+                    gittoLiveData.postValue(it)
                 }, {
                     Log.d("TAG_J", "getUserName: ")
                 })
         )
-        return gitResponse
+
     }
 
 }

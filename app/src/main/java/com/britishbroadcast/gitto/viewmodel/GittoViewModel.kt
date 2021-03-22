@@ -10,10 +10,12 @@ class GittoViewModel: ViewModel() {
 
     private val gittoRepository = GittoRepository()
 
-    var gittoLiveData = MutableLiveData<GitResponse>()
-
     fun getGitUser(userName: String){
-        gittoLiveData.postValue(gittoRepository.getUserName(userName))
+        gittoRepository.getUserName(userName)
+    }
+
+    fun getRepository(): GittoRepository{
+        return gittoRepository
     }
 
 
