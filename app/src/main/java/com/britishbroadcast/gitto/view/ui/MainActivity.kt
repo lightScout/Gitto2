@@ -1,19 +1,15 @@
 package com.britishbroadcast.gitto.view.ui
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.viewpager.widget.PagerAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.ActivityMainBinding
-import com.britishbroadcast.gitto.model.network.GittoRetrofit
-import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
-import com.britishbroadcast.gitto.viewmodel.GittoViewModel
+import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
+
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
-    private val gittoViewModel = GittoViewModel()
     private val splashScreenFragment = SplashScreenFragment()
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
@@ -22,7 +18,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        gittoViewModel.getGitUser("lightscout")
 
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -46,6 +41,8 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
             }
             true
         }
+
+
 
 
 

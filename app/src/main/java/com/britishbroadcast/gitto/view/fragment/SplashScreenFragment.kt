@@ -29,13 +29,13 @@ class SplashScreenFragment: Fragment() {
             logoImageView.setImageResource(R.drawable.logo)
         }
 
-        //Coroutine
-        GlobalScope.launch {
-            delay(2000L)
-            // Thi is where we will call the login page
-            // For now it is only popBackStack
-            parentFragmentManager.popBackStack()
-        }
+//        //Coroutine
+//        GlobalScope.launch {
+//            delay(2000L)
+//            // Thi is where we will call the login page
+//            // For now it is only popBackStack
+//            parentFragmentManager.popBackStack()
+//        }
 
 
     }

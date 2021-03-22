@@ -3,9 +3,9 @@ package com.britishbroadcast.gitto.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.britishbroadcast.gitto.view.ui.AddFragment
-import com.britishbroadcast.gitto.view.ui.HomeFragment
-import com.britishbroadcast.gitto.view.ui.SettingsFragment
+import com.britishbroadcast.gitto.view.fragment.AddFragment
+import com.britishbroadcast.gitto.view.fragment.HomeFragment
+import com.britishbroadcast.gitto.view.fragment.SettingsFragment
 
 class GittoViewPagerAdapter(fragmentManager: FragmentManager): FragmentPagerAdapter(fragmentManager) {
 

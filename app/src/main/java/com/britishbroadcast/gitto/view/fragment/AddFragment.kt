@@ -1,4 +1,4 @@
-package com.britishbroadcast.gitto.view.ui
+package com.britishbroadcast.gitto.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
 
-class SettingsFragment: Fragment() {
+class AddFragment: Fragment() {
     private val gittoViewModel by activityViewModels<GittoViewModel>()
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class SettingsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.settings_fragment_layout, container, false)
+        return inflater.inflate(R.layout.add_fragment_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

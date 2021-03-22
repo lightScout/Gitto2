@@ -26,6 +26,7 @@ class UserItemAdapter(private var owners: List<Owner>): RecyclerView.Adapter<Use
                     .load(it.avatar_url)
                     .into(userAvatarImageview)
             }
+
         }
     }
 

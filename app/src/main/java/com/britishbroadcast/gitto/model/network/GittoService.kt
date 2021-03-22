@@ -10,6 +10,6 @@ import retrofit2.http.Path
 interface GittoService {
 
     @GET(API_PATH)
-    fun getGitUser(@Path(USER_NAME) userName: String): Single<GitResponse>
+    fun getGitUser(@Path(USER_NAME) userName: String): Single<String>
 
 }

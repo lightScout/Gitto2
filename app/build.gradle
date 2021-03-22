@@ -3,11 +3,13 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+
 }
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+
 
     defaultConfig {
         applicationId "com.britishbroadcast.gitto"
@@ -32,9 +34,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    
-    viewBinding{
-        enabled true
+
+    buildFeatures {
+        viewBinding true
     }
 
 }
@@ -62,6 +64,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.6.2"
     implementation "com.squareup.retrofit2:converter-gson:2.6.2"
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.6.2"
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
 
     //RxJAva
     implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
@@ -74,8 +77,13 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:4.12.0"
     annotationProcessor "com.github.bumptech.glide:compiler:4.12.0"
 
+    def room_version = "2.2.6"
 
-    testImplementation 'junit:junit:4.+'
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
