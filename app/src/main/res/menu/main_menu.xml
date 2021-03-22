@@ -2,10 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/home_menu_item"
         android:title="Home"
         android:icon="@drawable/ic_home"
         />
-    <item android:title="Add" android:icon="@drawable/ic_add"/>
-    <item android:title="Settings" android:icon="@drawable/ic_settings"/>
+    <item
+        android:id="@+id/add_menu_item"
+        android:title="Add"
+        android:icon="@drawable/ic_add"
+        />
+    <item
+        android:id="@+id/settings_menu_item"
+        android:title="Settings"
+        android:icon="@drawable/ic_settings"
+        />
 
 </menu>
