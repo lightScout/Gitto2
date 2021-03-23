@@ -7,10 +7,14 @@ import com.britishbroadcast.gitto.databinding.UserItemLayoutBinding
 import com.britishbroadcast.gitto.model.data.Owner
 import com.bumptech.glide.Glide
 
-class UserItemAdapter(private var owners: List<Owner>): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
+class UserItemAdapter(var owners: List<Owner>, val userItemDelegate: UserItemDelegate): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
 
     inner class UserItemViewHolder(val binding: UserItemLayoutBinding): RecyclerView.ViewHolder(binding.root){
 
+    }
+
+    interface UserItemDelegate{
+        fun showRepositories()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
@@ -26,7 +30,10 @@ class UserItemAdapter(private var owners: List<Owner>): RecyclerView.Adapter<Use
                     .load(it.avatar_url)
                     .into(userAvatarImageview)
             }
+        }
 
+        holder.itemView.setOnClickListener {
+            userItemDelegate.showRepositories()
         }
     }
 

@@ -1,6 +1,7 @@
 package com.britishbroadcast.gitto.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,10 @@ import com.britishbroadcast.gitto.model.data.Owner
 import com.britishbroadcast.gitto.view.adapter.UserItemAdapter
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
 
-class HomeFragment: Fragment() {
+class HomeFragment: Fragment(), UserItemAdapter.UserItemDelegate {
     private val gittoViewModel by activityViewModels<GittoViewModel>()
 
-    private val userItemAdapter = UserItemAdapter(mutableListOf())
+    private val userItemAdapter = UserItemAdapter(mutableListOf(), this)
     private lateinit var binding: HomeFragmentLayoutBinding
 
     override fun onCreateView(
@@ -30,24 +31,28 @@ class HomeFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.apply {
             userRecyclerview.adapter = userItemAdapter
         }
+        userItemAdapter.updateOwners(getUsers())
+    }
 
-        gittoViewModel.getGitUser("lightscout")
-        val listOwner: MutableList<Owner> = mutableListOf()
-        gittoViewModel.getRepository().gittoLiveData.observe(viewLifecycleOwner, Observer {
-//                listOwner.add(it[0].owner)
-//                Log.d("TAG_X", it[0].owner.login)
-//                userItemAdapter.updateOwners(listOwner)
-                gittoViewModel.insertItemToDB(it)
-
-        })
-
-
-
-
+    override fun showRepositories() {
 
     }
+
+    fun getUsers(): List<Owner>{
+        var ownerList = mutableListOf<Owner>()
+
+        gittoViewModel.gitResponseLiveData.observe(viewLifecycleOwner, Observer {
+            it.forEach { gitResponse ->
+                ownerList.add(gitResponse[0].owner)
+            }
+
+        })
+        return ownerList
+    }
+
 
 }

@@ -7,6 +7,7 @@ import androidx.room.Room
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.model.data.GittoData
+import com.britishbroadcast.gitto.model.data.Owner
 import com.britishbroadcast.gitto.model.repository.GittoRepository
 import com.google.gson.Gson
 
@@ -19,6 +20,8 @@ class GittoViewModel(application: Application): AndroidViewModel(application) {
             "gitto.db"
             ).build()
 
+    val gitResponseLiveData = MutableLiveData<List<GitResponse>>()
+
 
     fun getGitUser(userName: String){
         gittoRepository.getUserName(userName)
@@ -30,20 +33,33 @@ class GittoViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun insertItemToDB(gitResponse: String){
-
         // Gitto object from String(json) Api call
         val gittoData = GittoData(gitResponse)
 
         // Adding gittoData to DB
-        // gittoDataBase.gittoDAO().insertGittoItem(gittoData)
-
-
-        // From gittoData to GitReponse
-        // val gitResponse = Gson().fromJson(gittoData.userData, GitResponse::class.java)
+        Thread{
+            gittoDataBase.gittoDAO().insertGittoItem(gittoData)
+        }.start()
 
     }
 
+    fun readDataFromDB(){
 
+        var gittoDataList = listOf<GittoData>()
+        Thread {
+            gittoDataList = gittoDataBase.gittoDAO().getAllItems()
+        }.start()
 
-
+        if(gittoDataList.isNotEmpty()) {
+            var gitResponseList = mutableListOf<GitResponse>()
+            gittoDataList.forEach {
+                // From gittoData to GitReponse
+                val gitResponse = Gson().fromJson(it.userData, GitResponse::class.java)
+                gitResponseList.add(gitResponse)
+            }
+            gitResponseLiveData.postValue(gitResponseList)
+        }else{
+            //gittoRepository.getUserName()
+        }
+    }
 }
