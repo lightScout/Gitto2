@@ -85,7 +85,7 @@
         />
 
     <TextView
-        android:id="@+id/github_textView"
+        android:id="@+id/signup_with_github_textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/layout_margin_16dp"

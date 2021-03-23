@@ -1,6 +1,9 @@
 package com.britishbroadcast.gitto.view.ui.fragment
 
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +13,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.LoginFragmentLayoutBinding
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
+import com.britishbroadcast.gitto.view.ui.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.login_fragment_layout.*
 
@@ -17,6 +24,12 @@ class LoginScreenFragment: Fragment() {
 
     private lateinit var binding: LoginFragmentLayoutBinding
 
+
+    interface LoginDelegate{
+        fun gitHubLogin()
+    }
+
+    private lateinit var loginDelegate: LoginDelegate
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -37,10 +50,18 @@ class LoginScreenFragment: Fragment() {
                 this.signUpCardView.visibility = View.VISIBLE
             }
 
+            this.signupWithGithubTextView.setOnClickListener {
+loginDelegate.gitHubLogin()
+            }
+
         }
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        loginDelegate = (context as MainActivity)
+    }
 
     private fun signUpNewUser() {
         val email = binding.suEmailEditText.text.toString().trim()

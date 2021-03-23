@@ -25,7 +25,7 @@ class GittoRepository {
                             gittoLiveData.postValue(it)
 
                         }, {
-                            Log.d("TAG_J", "getUserName: ")
+                            Log.d("TAG_J", it.localizedMessage)
                         })
         )
 

@@ -2,6 +2,7 @@ package com.britishbroadcast.gitto.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.britishbroadcast.gitto.databinding.SplashScreenLayoutBinding
 import com.britishbroadcast.gitto.view.ui.MainActivity
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -38,13 +40,11 @@ class SplashScreenFragment: Fragment() {
         binding.apply {
             logoImageView.setImageResource(R.drawable.logo)
         }
-
+        Log.d("TAG_J", "onViewCreated: splashScreen")
         //Coroutine
         GlobalScope.launch {
             delay(2000L)
-
-            parentFragmentManager.popBackStack()
-            splashScreenInterface.callLoginScreenFragment()
+                splashScreenInterface.callLoginScreenFragment()
 
         }
 

@@ -1,30 +1,38 @@
 package com.britishbroadcast.gitto.view.ui
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.viewpager.widget.ViewPager
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.ActivityMainBinding
-import com.britishbroadcast.gitto.model.data.Owner
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate {
     private val splashScreenFragment = SplashScreenFragment()
     private val loginScreenFragment = LoginScreenFragment()
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
     private val gittoViewModel: GittoViewModel by viewModels()
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private var didAppStarted = AtomicBoolean(false)
 
     private lateinit var lastUpdatedDate: Date
 
@@ -36,20 +44,18 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         // Reading/check data from database
         gittoViewModel.readDataFromDB()
 
+        sharedPreferences = getSharedPreferences("GITTO_PREF", Context.MODE_PRIVATE)
+
         gittoViewModel.getRepository().gittoLiveData.observe(this, Observer {
             gittoViewModel.insertItemToDB(it)
             gittoViewModel.readDataFromDB()
         })
 
-        supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out,
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out
-                ).replace(R.id.main_frameLayout, splashScreenFragment)
-                .addToBackStack(null)
-                .commit()
+        checkAppStartUp()
+
+
+
+        Log.d("TAG_J", "onCreate: mainActivity")
 
         //ViewPager Adapter
         gittoViewPagerAdapter = GittoViewPagerAdapter(supportFragmentManager)
@@ -67,30 +73,42 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     }
 
-    private fun checkIfUserExistAndAdd(username: String){
-//        //Reading all data from room database
-//        gittoViewModel.readDataFromDB()
-//
-//        var ownerList = mutableListOf<String>()
-//        gittoViewModel.gitResponseLiveData.observe(this, Observer {
-//            it.forEach { gitResponse ->
-//                ownerList.add(gitResponse[0].owner.login)
-//                Log.d("TAG_X", gitResponse[0].owner.login)
-//            }
-//        })
-//
-//        if(ownerList.isEmpty()){
-//            addUser(username)
-//        }else{
-//            var isAlreadyInDB = false
-//            ownerList.forEach {
-//                if (it == username)
-//                    isAlreadyInDB = true
-//            }
-//            if (isAlreadyInDB)
-//                addUser(username)
-//        }
+    private fun checkAppStartUp() {
+
+        //TODO: Fix splash call - it is being called after gitgub login
+        // Tracking the if the app was opened before
+        if (!sharedPreferences.getBoolean("APP_STARTED", true)) {
+            Toast.makeText(this, "Welcome back", Toast.LENGTH_LONG).show();
+            callLoginScreenFragment()
+            sharedPreferences.edit().putBoolean("FIRST_TIME", false).apply()
+
+        } else{
+//            Toast.makeText(this, "Welcome back", Toast.LENGTH_LONG).show();
+            sharedPreferences.edit().putBoolean("FIRST_TIME", true).apply();
+            callSplashScreenFragment()
+
     }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("TAG_J", "onDestroy: ")
+
+    }
+
+    private fun callSplashScreenFragment() {
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                ).add(R.id.main_frameLayout, splashScreenFragment)
+                .addToBackStack(splashScreenFragment.tag)
+                .commit()
+    }
+
+
 
     private fun addUser(username: String){
         //Adding users from API to RoomDatabase
@@ -118,6 +136,18 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     override fun callLoginScreenFragment() {
 
+        val uri = intent.data
+
+        Log.d("TAG_J", "onResume: ")
+        if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)){
+
+            runOnUiThread {
+                Toast.makeText(this, "Successfully logged in with GitHub!", Toast.LENGTH_SHORT).show()
+            }
+
+            supportFragmentManager.popBackStack()
+        }else{
+            supportFragmentManager.popBackStack()
             supportFragmentManager.beginTransaction()
                     .setCustomAnimations(
                             android.R.anim.fade_in,
@@ -127,9 +157,17 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                     ).replace(R.id.main_frameLayout, loginScreenFragment)
                     .addToBackStack(null)
                     .commit()
+        }
+
+
     }
 
     override fun onBackPressed() {
         //TODO: implement backPress after successful login
+    }
+
+    override fun gitHubLogin() {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$GIT_REQUEST_URL" + "?client_id=" + "$GIT_CLIENT_ID" + "&redirect_url=" + "${GIT_REDIRECT_URI}"))
+        startActivity(intent)
     }
 }
