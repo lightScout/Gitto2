@@ -35,7 +35,6 @@ class GittoViewModel(application: Application): AndroidViewModel(application) {
     fun insertItemToDB(gitResponse: String){
         // Gitto object from String(json) Api call
         val gittoData = GittoData(gitResponse)
-
         // Adding gittoData to DB
         Thread{
             gittoDataBase.gittoDAO().insertGittoItem(gittoData)
@@ -59,7 +58,10 @@ class GittoViewModel(application: Application): AndroidViewModel(application) {
             }
             gitResponseLiveData.postValue(gitResponseList)
         }else{
-            //gittoRepository.getUserName()
+            //Adding users from API to RoomDatabase
+            getGitUser("lightScout")
+            getGitUser("sifatsaif95")
+            getGitUser("MindaRah")
         }
     }
 }

@@ -30,15 +30,13 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //Reading all data from room database
+        // Reading/check data from database
         gittoViewModel.readDataFromDB()
 
-
-        //Adding users from API to RoomDatabase
-        checkIfUserExistAndAdd("lightScout")
-        checkIfUserExistAndAdd("sifatsaif95")
-        checkIfUserExistAndAdd("MindaRah")
-
+        gittoViewModel.getRepository().gittoLiveData.observe(this, Observer {
+            gittoViewModel.insertItemToDB(it)
+            gittoViewModel.readDataFromDB()
+        })
 
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -67,37 +65,34 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     private fun checkIfUserExistAndAdd(username: String){
-        //Reading all data from room database
-        gittoViewModel.readDataFromDB()
-
-        var ownerList = mutableListOf<String>()
-        gittoViewModel.gitResponseLiveData.observe(this, Observer {
-            it.forEach { gitResponse ->
-                ownerList.add(gitResponse[0].owner.login)
-                Log.d("TAG_X", gitResponse[0].owner.login)
-            }
-        })
-
-        if(ownerList.isEmpty()){
-            addUser(username)
-        }else{
-            var isAlreadyInDB = false
-            ownerList.forEach {
-                if (it == username)
-                    isAlreadyInDB = true
-            }
-            if (isAlreadyInDB)
-                addUser(username)
-        }
+//        //Reading all data from room database
+//        gittoViewModel.readDataFromDB()
+//
+//        var ownerList = mutableListOf<String>()
+//        gittoViewModel.gitResponseLiveData.observe(this, Observer {
+//            it.forEach { gitResponse ->
+//                ownerList.add(gitResponse[0].owner.login)
+//                Log.d("TAG_X", gitResponse[0].owner.login)
+//            }
+//        })
+//
+//        if(ownerList.isEmpty()){
+//            addUser(username)
+//        }else{
+//            var isAlreadyInDB = false
+//            ownerList.forEach {
+//                if (it == username)
+//                    isAlreadyInDB = true
+//            }
+//            if (isAlreadyInDB)
+//                addUser(username)
+//        }
     }
 
     private fun addUser(username: String){
         //Adding users from API to RoomDatabase
         gittoViewModel.getGitUser(username)
-        gittoViewModel.getRepository().gittoLiveData.observe(this, Observer {
-            Log.d("TAG_X", it)
-            gittoViewModel.insertItemToDB(it)
-        })
+
         //Reading all data from room database
         gittoViewModel.readDataFromDB()
     }
