@@ -1,5 +1,6 @@
 package com.britishbroadcast.gitto.view.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -13,12 +14,14 @@ import com.britishbroadcast.gitto.databinding.ActivityMainBinding
 import com.britishbroadcast.gitto.model.data.Owner
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
+import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface {
     private val splashScreenFragment = SplashScreenFragment()
+    private val loginScreenFragment = LoginScreenFragment()
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
     private val gittoViewModel: GittoViewModel by viewModels()
@@ -111,5 +114,22 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
 
     override fun onPageScrollStateChanged(state: Int) {
         //Not implemented -- not needed
+    }
+
+    override fun callLoginScreenFragment() {
+
+            supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                            android.R.anim.fade_in,
+                            android.R.anim.fade_out,
+                            android.R.anim.fade_in,
+                            android.R.anim.fade_out
+                    ).replace(R.id.main_frameLayout, loginScreenFragment)
+                    .addToBackStack(null)
+                    .commit()
+    }
+
+    override fun onBackPressed() {
+        //TODO: implement backPress after successful login
     }
 }
