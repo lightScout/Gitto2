@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -75,19 +76,25 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     private fun checkAppStartUp() {
 
-        //TODO: Fix splash call - it is being called after gitgub login
         // Tracking the if the app was opened before
-        if (!sharedPreferences.getBoolean("APP_STARTED", true)) {
-            Toast.makeText(this, "Welcome back", Toast.LENGTH_LONG).show();
-            callLoginScreenFragment()
-            sharedPreferences.edit().putBoolean("FIRST_TIME", false).apply()
+        val uri = intent.data
 
-        } else{
-//            Toast.makeText(this, "Welcome back", Toast.LENGTH_LONG).show();
-            sharedPreferences.edit().putBoolean("FIRST_TIME", true).apply();
+        Log.d("TAG_J", "onResume: ")
+        if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
+
+                Toast.makeText(this, "Successfully logged in with GitHub! ${uri.getQueryParameters("code")}", Toast.LENGTH_SHORT).show()
+
+
+            View.VISIBLE.apply {
+                binding.mainNavigationView.visibility = this
+                binding.mainViewPager.visibility = this
+            }
+
+
+        }else{
             callSplashScreenFragment()
+        }
 
-    }
     }
 
     override fun onDestroy() {
@@ -136,17 +143,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     override fun callLoginScreenFragment() {
 
-        val uri = intent.data
-
-        Log.d("TAG_J", "onResume: ")
-        if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)){
-
-            runOnUiThread {
-                Toast.makeText(this, "Successfully logged in with GitHub!", Toast.LENGTH_SHORT).show()
-            }
-
-            supportFragmentManager.popBackStack()
-        }else{
             supportFragmentManager.popBackStack()
             supportFragmentManager.beginTransaction()
                     .setCustomAnimations(
@@ -157,8 +153,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                     ).replace(R.id.main_frameLayout, loginScreenFragment)
                     .addToBackStack(null)
                     .commit()
-        }
-
 
     }
 
