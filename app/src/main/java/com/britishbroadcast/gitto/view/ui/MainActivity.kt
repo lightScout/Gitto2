@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     private lateinit var lastUpdatedDate: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -82,13 +83,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         Log.d("TAG_J", "onResume: ")
         if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
 
+
                 Toast.makeText(this, "Successfully logged in with GitHub! ${uri.getQueryParameters("code")}", Toast.LENGTH_SHORT).show()
 
-
-            View.VISIBLE.apply {
-                binding.mainNavigationView.visibility = this
-                binding.mainViewPager.visibility = this
-            }
+           updateMainActivityUI()
 
 
         }else{
@@ -164,4 +162,13 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$GIT_REQUEST_URL" + "?client_id=" + "$GIT_CLIENT_ID" + "&redirect_url=" + "${GIT_REDIRECT_URI}"))
         startActivity(intent)
     }
+
+    override fun updateMainActivityUI() {
+        View.VISIBLE.apply {
+            binding.mainNavigationView.visibility = this
+            binding.mainViewPager.visibility = this
+        }
+    }
+
+
 }

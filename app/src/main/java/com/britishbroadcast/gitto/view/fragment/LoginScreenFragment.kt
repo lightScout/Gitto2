@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ class LoginScreenFragment: Fragment() {
 
     interface LoginDelegate{
         fun gitHubLogin()
+        fun updateMainActivityUI()
     }
 
     private lateinit var loginDelegate: LoginDelegate
@@ -51,7 +53,17 @@ class LoginScreenFragment: Fragment() {
             }
 
             this.signupWithGithubTextView.setOnClickListener {
-loginDelegate.gitHubLogin()
+                loginDelegate.gitHubLogin()
+            }
+
+            this.loginButton.setOnClickListener {
+                if(validLogin())
+                    loginUser()
+            }
+
+            this.suButton.setOnClickListener {
+                if(validSignUp())
+                    signUpNewUser()
             }
 
         }
@@ -71,7 +83,7 @@ loginDelegate.gitHubLogin()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(context, "Sign up complete.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Sign up complete. Please verify your account through the verification email sent to you.", Toast.LENGTH_LONG).show()
                         FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
 
                         val animation2 =
@@ -79,66 +91,68 @@ loginDelegate.gitHubLogin()
 
                         binding.signUpCardView.animation = animation2
 
-                        binding.signUpCardView.visibility = View.GONE
+                        binding.signUpCardView.visibility = View.INVISIBLE
+
                     } else {
-                        Toast.makeText(
-                                context,
-                                "Error1 ${it.exception?.localizedMessage}",
-                                Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context,"${it.exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        Log.d("TAG_J", "signUpNewUser error: ${it.exception?.localizedMessage}")
 
                     }
                 }
     }
 
     private fun loginUser() {
-        val email = li_email_edittext.text.toString()
-        val password = li_password_editext.text.toString()
+
+        val email = binding.liEmailEdittext.text.toString()
+        val password = binding.liPasswordEditext.text.toString()
 
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
-                            Toast.makeText(context, "User authenticated!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "User login successful!", Toast.LENGTH_SHORT).show()
+                            parentFragmentManager.popBackStack()
+                            loginDelegate.updateMainActivityUI()
+
                         } else
-                            Toast.makeText(context, "Please verify your Email!", Toast.LENGTH_SHORT)
+                            Toast.makeText(context, "Please verify your account before signing in!", Toast.LENGTH_SHORT)
                                     .show()
                     } else {
                         Toast.makeText(
-                                context,
-                                it.exception?.localizedMessage ?: "Something went wrong",
+                                context, "Sorry, Something went wrong. Please try again",
                                 Toast.LENGTH_SHORT
                         ).show()
+                        Log.d("TAG_J", "loginUser error: ${it.exception?.localizedMessage}")
                     }
                 }
     }
 
     private fun validLogin(): Boolean {
-        when {
-            li_email_edittext.text.isEmpty() -> {
+        return when {
+            binding.liEmailEdittext.text.isEmpty() -> {
                 Toast.makeText(context, "Email cannot be empty!", Toast.LENGTH_SHORT).show()
-                return false
+                false
             }
-            li_password_editext.text.isEmpty() -> {
+            binding.liPasswordEditext.text.isEmpty() -> {
                 Toast.makeText(context, "Password cannot be empty!", Toast.LENGTH_SHORT).show()
-                return false
+                false
             }
-            else -> return true
+            else -> true
         }
     }
 
     private fun validSignUp(): Boolean {
         when {
-            su_email_editText.text.isEmpty() -> {
+            binding.suEmailEditText.text.isEmpty() -> {
                 Toast.makeText(context, "Email cannot be empty!", Toast.LENGTH_SHORT).show()
                 return false
             }
-            su_password_editText.text.isEmpty() -> {
+            binding.suPasswordEditText.text.isEmpty() -> {
                 Toast.makeText(context, "Password cannot be empty!", Toast.LENGTH_SHORT).show()
                 return false
             }
-            su_confirm_password_editText.text.isEmpty() -> {
+            binding.suConfirmPasswordEditText.text.isEmpty() -> {
                 Toast.makeText(
                         context,
                         "Confirm password cannot be empty!",
@@ -146,10 +160,10 @@ loginDelegate.gitHubLogin()
                 ).show()
                 return false
             }
-            su_confirm_password_editText != su_password_editText -> {
+            (binding.suConfirmPasswordEditText.text.toString() != binding.suPasswordEditText.text.toString()) -> {
                 Toast.makeText(
                         context,
-                        "Confirm password must match password!",
+                        "Password do not match",
                         Toast.LENGTH_SHORT
                 )
                         .show()
@@ -158,8 +172,4 @@ loginDelegate.gitHubLogin()
             else -> return true
         }
     }
-
-
 }
-
-
