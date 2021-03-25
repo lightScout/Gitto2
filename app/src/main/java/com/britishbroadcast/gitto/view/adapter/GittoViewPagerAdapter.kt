@@ -9,6 +9,8 @@ import com.britishbroadcast.gitto.view.fragment.SettingsFragment
 
 class GittoViewPagerAdapter(fragmentManager: FragmentManager): FragmentPagerAdapter(fragmentManager) {
 
+
+
     companion object{
         const val FRAGMENT_COUNT = 3
     }

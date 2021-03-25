@@ -18,20 +18,27 @@ import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
+import com.britishbroadcast.gitto.view.fragment.HomeFragment
+import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate, HomeFragment.HomeFragmentInterface {
     private val splashScreenFragment = SplashScreenFragment()
     private val loginScreenFragment = LoginScreenFragment()
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
     private val gittoViewModel: GittoViewModel by viewModels()
     private lateinit var sharedPreferences: SharedPreferences
+    private val repositoriesFragment = RepositoriesFragment()
 
     private var didAppStarted = AtomicBoolean(false)
 
@@ -43,21 +50,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Reading/check data from database
-        gittoViewModel.readDataFromDB()
-
         sharedPreferences = getSharedPreferences("GITTO_PREF", Context.MODE_PRIVATE)
-
-        gittoViewModel.getRepository().gittoLiveData.observe(this, Observer {
-            gittoViewModel.insertItemToDB(it)
-            gittoViewModel.readDataFromDB()
-        })
 
         checkAppStartUp()
 
-
-
-        Log.d("TAG_J", "onCreate: mainActivity")
 
         //ViewPager Adapter
         gittoViewPagerAdapter = GittoViewPagerAdapter(supportFragmentManager)
@@ -73,6 +69,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         }
 
 
+
     }
 
     private fun checkAppStartUp() {
@@ -80,19 +77,29 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         // Tracking the if the app was opened before
         val uri = intent.data
 
-        Log.d("TAG_J", "onResume: ")
         if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
 
-
-                Toast.makeText(this, "Successfully logged in with GitHub! ${uri.getQueryParameters("code")}", Toast.LENGTH_SHORT).show()
-
+                Toast.makeText(this, "Successfully logged in with GitHub!", Toast.LENGTH_SHORT).show()
+            checkLastApiCall()
            updateMainActivityUI()
-
 
         }else{
             callSplashScreenFragment()
         }
 
+    }
+
+    private fun checkLastApiCall() {
+        val prevDate = sharedPreferences.getString("DATE_PREF","")
+        val currentDate = Calendar.getInstance().time
+        Log.d("TAG_J", "prevDate: ${prevDate.isNullOrEmpty()}")
+        if (prevDate.isNullOrEmpty()){
+            sharedPreferences.edit().putString("DATE_PREF", currentDate.toString())
+            gittoViewModel.populateDB()
+        }else{
+        //TODO: check if has been 24h past
+
+        }
     }
 
     override fun onDestroy() {
@@ -120,7 +127,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         gittoViewModel.getGitUser(username)
 
         //Reading all data from room database
-        gittoViewModel.readDataFromDB()
+//        gittoViewModel.readDataFromDB()
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -168,6 +175,20 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
             binding.mainNavigationView.visibility = this
             binding.mainViewPager.visibility = this
         }
+    }
+
+    override fun displayRepositoriesFragment() {
+        Log.d("TAG_X", "User click-main")
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                )
+                .replace(R.id.home_frameLayout, repositoriesFragment)
+                .addToBackStack(repositoriesFragment.tag)
+                .commit()
     }
 
 
