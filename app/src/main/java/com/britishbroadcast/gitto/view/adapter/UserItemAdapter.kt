@@ -7,6 +7,7 @@ import com.britishbroadcast.gitto.databinding.UserItemLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.model.data.Owner
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegate: UserItemDelegate): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
 
@@ -29,6 +30,7 @@ class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegate: UserI
 
                 userNameTextview.text = it[0].owner.login
                 Glide.with(userAvatarImageview)
+                        .setDefaultRequestOptions(RequestOptions.circleCropTransform())
                     .load(it[0].owner.avatar_url)
                     .into(userAvatarImageview)
             }

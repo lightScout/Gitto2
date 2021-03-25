@@ -3,7 +3,10 @@ package com.britishbroadcast.gitto.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.room.RoomDatabase
+import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.model.repository.GittoRepository
+import com.google.gson.Gson
 
 class GittoViewModel(application: Application): AndroidViewModel(application) {
 
@@ -17,6 +20,16 @@ class GittoViewModel(application: Application): AndroidViewModel(application) {
 
     fun getRepository(): GittoRepository{
         return gittoRepository
+    }
+
+    fun getAllDataFromDB(): List<GitResponse>{
+        var gitResponseList = mutableListOf<GitResponse>()
+
+        gittoRepository.getDataBase().gittoDAO().getAllItems().forEach {
+            val gitResponse = Gson().fromJson(it.userData, GitResponse::class.java)
+            gitResponseList.add(gitResponse)
+        }
+        return gitResponseList
     }
 
 

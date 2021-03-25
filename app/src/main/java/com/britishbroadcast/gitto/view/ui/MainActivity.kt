@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.ActivityMainBinding
@@ -23,10 +22,11 @@ import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
-import kotlinx.coroutines.Dispatchers
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Deferred
+
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -40,8 +40,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     private lateinit var sharedPreferences: SharedPreferences
     private val repositoriesFragment = RepositoriesFragment()
 
-    private var didAppStarted = AtomicBoolean(false)
-
     private lateinit var lastUpdatedDate: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +51,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         sharedPreferences = getSharedPreferences("GITTO_PREF", Context.MODE_PRIVATE)
 
         checkAppStartUp()
-
 
         //ViewPager Adapter
         gittoViewPagerAdapter = GittoViewPagerAdapter(supportFragmentManager)
@@ -72,22 +69,24 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     }
 
-    private fun checkAppStartUp() {
+     override fun checkAppStartUp() {
 
-        // Tracking the if the app was opened before
-        val uri = intent.data
-
-        if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
+            val uri = intent.data
+            if(uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
 
                 Toast.makeText(this, "Successfully logged in with GitHub!", Toast.LENGTH_SHORT).show()
-            checkLastApiCall()
-           updateMainActivityUI()
+                checkLastApiCall()
+                updateMainActivityUI()
+            }else{
+                callSplashScreenFragment()
 
-        }else{
-            callSplashScreenFragment()
-        }
+            }
+
+
+
 
     }
+
 
     private fun checkLastApiCall() {
         val prevDate = sharedPreferences.getString("DATE_PREF","")
@@ -115,9 +114,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                         android.R.anim.fade_out,
                         android.R.anim.fade_in,
                         android.R.anim.fade_out
-                ).add(R.id.main_frameLayout, splashScreenFragment)
+                ).replace(R.id.main_frameLayout, splashScreenFragment)
                 .addToBackStack(splashScreenFragment.tag)
                 .commit()
+
     }
 
 
@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         //Not implemented -- not needed
     }
 
-    override fun callLoginScreenFragment() {
+     override fun callLoginScreenFragment() {
 
             supportFragmentManager.popBackStack()
             supportFragmentManager.beginTransaction()
@@ -158,6 +158,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                     ).replace(R.id.main_frameLayout, loginScreenFragment)
                     .addToBackStack(null)
                     .commit()
+
 
     }
 
@@ -171,6 +172,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     }
 
     override fun updateMainActivityUI() {
+        gittoViewModel.getRepository().gitResponseLiveData.postValue(gittoViewModel.getAllDataFromDB())
         View.VISIBLE.apply {
             binding.mainNavigationView.visibility = this
             binding.mainViewPager.visibility = this
@@ -179,6 +181,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     override fun displayRepositoriesFragment() {
         Log.d("TAG_X", "User click-main")
+
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
                         android.R.anim.fade_in,

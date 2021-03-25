@@ -11,10 +11,8 @@ import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.SplashScreenLayoutBinding
 import com.britishbroadcast.gitto.view.ui.MainActivity
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.*
 import java.util.*
 
 class SplashScreenFragment: Fragment() {
@@ -22,6 +20,8 @@ class SplashScreenFragment: Fragment() {
 
 
     interface SplashScreenInterface{
+        fun checkAppStartUp()
+        fun updateMainActivityUI()
         fun callLoginScreenFragment()
     }
 
@@ -40,11 +40,20 @@ class SplashScreenFragment: Fragment() {
         binding.apply {
             logoImageView.setImageResource(R.drawable.logo)
         }
-        Log.d("TAG_J", "onViewCreated: splashScreen")
-        //Coroutine
-        GlobalScope.launch {
-            delay(2000L)
-                splashScreenInterface.callLoginScreenFragment()
+        Log.d("TAG_J", "onViewCreated: splah!")
+
+//        Coroutine
+        GlobalScope.async {
+            delay(3000L)
+            async {
+                if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
+                    Log.d("TAG_J", "FIrebase auth true")
+                    splashScreenInterface.updateMainActivityUI()
+                } else {
+                    parentFragmentManager.popBackStack()
+                    splashScreenInterface.callLoginScreenFragment()
+                }
+            }
 
         }
 

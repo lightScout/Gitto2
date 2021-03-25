@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.model.data.GittoData
@@ -27,6 +28,10 @@ class GittoRepository(application: Application) {
     val gitResponseLiveData = MutableLiveData<List<GitResponse>>()
 
     var gitResponseList = mutableListOf<GitResponse>()
+
+    fun getDataBase(): GittoDataBase{
+        return gittoDataBase
+    }
 
     fun getUserName(userName: String){
 
