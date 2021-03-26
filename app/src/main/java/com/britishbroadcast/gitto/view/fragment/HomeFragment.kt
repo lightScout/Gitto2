@@ -2,16 +2,13 @@ package com.britishbroadcast.gitto.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.HomeFragmentLayoutBinding
-import com.britishbroadcast.gitto.model.data.Owner
 import com.britishbroadcast.gitto.view.adapter.UserItemAdapter
 import com.britishbroadcast.gitto.view.ui.MainActivity
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel

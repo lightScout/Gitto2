@@ -2,6 +2,7 @@ package com.britishbroadcast.gitto.model.network
 
 import android.util.Log
 import com.britishbroadcast.gitto.model.data.GitResponse
+import com.britishbroadcast.gitto.model.data.GitUsersResponse
 import com.britishbroadcast.gitto.util.Constants.Companion.BASE_URL
 import io.reactivex.Single
 import okhttp3.OkHttpClient
@@ -31,6 +32,7 @@ class GittoRetrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
@@ -39,5 +41,7 @@ class GittoRetrofit {
     private fun createGittoService(retrofit: Retrofit): GittoService = retrofit.create(GittoService::class.java)
 
     fun getGitUser(userName: String): Single<String> = gittoService.getGitUser(userName)
+
+    fun searchUserByName(userName: String): Single<GitUsersResponse> = gittoService.searchUserByName(userName)
 
 }

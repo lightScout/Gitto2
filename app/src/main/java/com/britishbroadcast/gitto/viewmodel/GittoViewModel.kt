@@ -18,6 +18,10 @@ class GittoViewModel(application: Application): AndroidViewModel(application) {
         gittoRepository.getUserName(userName)
     }
 
+    fun searchUserByName(userName: String){
+        gittoRepository.searchUserByName(userName)
+    }
+
     fun getRepository(): GittoRepository{
         return gittoRepository
     }

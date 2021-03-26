@@ -4,7 +4,9 @@ class Constants {
 
     companion object{
         const val BASE_URL = "https://api.github.com"
-        const val API_PATH = "users/{user_name}/repos"
+        const val API_PATH_SINGLE_USER = "users/{user_name}/repos"
+        const val API_PATH_MULTIPLE_USERS = "search/users"
+        const val Q = "q"
         const val USER_NAME = "user_name"
         const val GIT_CLIENT_ID = "d5fe5b93620217eaa352"
         const val GIT_CLIENT_SECRET = "2dc54f244c896286b9e2680b496ae50111146166"

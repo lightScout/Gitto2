@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Gitto</string>
+    <string name="search_user_by_name_text">Search user by name</string>
 </resources>

@@ -22,13 +22,11 @@ import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Deferred
-
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.*
+import com.google.firebase.auth.OAuthProvider
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate, HomeFragment.HomeFragmentInterface {
@@ -76,28 +74,28 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
                 Toast.makeText(this, "Successfully logged in with GitHub!", Toast.LENGTH_SHORT).show()
                 checkLastApiCall()
-                updateMainActivityUI()
             }else{
                 callSplashScreenFragment()
 
             }
 
-
-
-
     }
 
 
     private fun checkLastApiCall() {
-        val prevDate = sharedPreferences.getString("DATE_PREF","")
+        val prevDate = sharedPreferences.getString("DATE_PREF", "")
         val currentDate = Calendar.getInstance().time
         Log.d("TAG_J", "prevDate: ${prevDate.isNullOrEmpty()}")
         if (prevDate.isNullOrEmpty()){
-            sharedPreferences.edit().putString("DATE_PREF", currentDate.toString())
+            sharedPreferences.edit().putString("DATE_PREF", currentDate.toString()).apply()
             gittoViewModel.populateDB()
+            View.VISIBLE.apply {
+                binding.mainNavigationView.visibility = this
+                binding.mainViewPager.visibility = this
+            }
         }else{
         //TODO: check if has been 24h past
-
+            updateMainActivityUI()
         }
     }
 
@@ -167,6 +165,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     }
 
     override fun gitHubLogin() {
+
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$GIT_REQUEST_URL" + "?client_id=" + "$GIT_CLIENT_ID" + "&redirect_url=" + "${GIT_REDIRECT_URI}"))
         startActivity(intent)
     }

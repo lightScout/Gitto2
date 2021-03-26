@@ -2,14 +2,16 @@ package com.britishbroadcast.gitto.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.britishbroadcast.gitto.databinding.UserItemLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
-import com.britishbroadcast.gitto.model.data.Owner
+import com.britishbroadcast.gitto.view.fragment.AddFragment
+import com.britishbroadcast.gitto.view.fragment.HomeFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegate: UserItemDelegate): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
+class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegateHomeFragment: HomeFragment): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
 
     inner class UserItemViewHolder(val binding: UserItemLayoutBinding): RecyclerView.ViewHolder(binding.root){
 
@@ -25,6 +27,7 @@ class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegate: UserI
     }
 
     override fun onBindViewHolder(holder: UserItemViewHolder, position: Int) {
+        holder.itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, android.R.anim.slide_in_left)
         holder.binding.apply {
             owners[position].let {
 
@@ -37,7 +40,7 @@ class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegate: UserI
         }
 
         holder.itemView.setOnClickListener {
-            userItemDelegate.showRepositories()
+            userItemDelegateHomeFragment?.showRepositories()
         }
     }
 

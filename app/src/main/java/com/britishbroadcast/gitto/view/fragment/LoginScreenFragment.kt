@@ -2,8 +2,6 @@ package com.britishbroadcast.gitto.view.ui.fragment
 
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +16,10 @@ import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
 import com.britishbroadcast.gitto.view.ui.MainActivity
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
 import kotlinx.android.synthetic.main.login_fragment_layout.*
 
 class LoginScreenFragment: Fragment() {
@@ -54,6 +55,9 @@ class LoginScreenFragment: Fragment() {
 
             this.signupWithGithubTextView.setOnClickListener {
                 loginDelegate.gitHubLogin()
+
+
+
             }
 
             this.loginButton.setOnClickListener {
@@ -94,7 +98,7 @@ class LoginScreenFragment: Fragment() {
                         binding.signUpCardView.visibility = View.INVISIBLE
 
                     } else {
-                        Toast.makeText(context,"${it.exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${it.exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
                         Log.d("TAG_J", "signUpNewUser error: ${it.exception?.localizedMessage}")
 
                     }

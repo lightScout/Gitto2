@@ -48,6 +48,7 @@ class SplashScreenFragment: Fragment() {
             async {
                 if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
                     Log.d("TAG_J", "FIrebase auth true")
+                    parentFragmentManager.popBackStack()
                     splashScreenInterface.updateMainActivityUI()
                 } else {
                     parentFragmentManager.popBackStack()

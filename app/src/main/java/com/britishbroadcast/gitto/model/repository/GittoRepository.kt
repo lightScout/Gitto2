@@ -7,7 +7,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
 import com.britishbroadcast.gitto.model.data.GitResponse
+import com.britishbroadcast.gitto.model.data.GitUsersResponse
 import com.britishbroadcast.gitto.model.data.GittoData
+import com.britishbroadcast.gitto.model.data.Item
 import com.britishbroadcast.gitto.model.network.GittoRetrofit
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,7 +29,11 @@ class GittoRepository(application: Application) {
             .build()
     val gitResponseLiveData = MutableLiveData<List<GitResponse>>()
 
+    val gitSearchResponseLiveData = MutableLiveData<List<Item>>()
+
     var gitResponseList = mutableListOf<GitResponse>()
+
+    var gitSearchUserByNameList = mutableListOf<GitUsersResponse>()
 
     fun getDataBase(): GittoDataBase{
         return gittoDataBase
@@ -47,12 +53,29 @@ class GittoRepository(application: Application) {
                             val gitResponse = Gson().fromJson(gittoData.userData, GitResponse::class.java)
                             gitResponseList.add(gitResponse)
                             gitResponseLiveData.postValue(gitResponseList)
-
+//                            compositeDisposable.clear()
                         }, {
                             Log.d("TAG_J", it.localizedMessage)
                         })
         )
 
+    }
+    fun searchUserByName(userName: String){
+        compositeDisposable.add(
+                gittoRetrofit.searchUserByName(userName)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .map {
+                            it.items
+                        }
+                        .subscribe({
+
+                            gitSearchResponseLiveData.postValue(it)
+                            compositeDisposable.clear()
+                        }, {
+                            Log.d("TAG_J", it.localizedMessage)
+                        })
+        )
     }
 
 }
