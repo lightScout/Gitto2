@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager.widget.ViewPager
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.ActivityMainBinding
@@ -17,19 +21,16 @@ import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
-import com.britishbroadcast.gitto.view.fragment.HomeFragment
 import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
+import com.britishbroadcast.gitto.view.fragment.UserFragment
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthProvider
+import java.time.LocalDateTime
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate, HomeFragment.HomeFragmentInterface {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate, RepositoriesFragment.RepositoryInterface, UserFragment.UserFragmentInterface {
     private val splashScreenFragment = SplashScreenFragment()
     private val loginScreenFragment = LoginScreenFragment()
     private lateinit var binding: ActivityMainBinding
@@ -38,8 +39,8 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     private lateinit var sharedPreferences: SharedPreferences
     private val repositoriesFragment = RepositoriesFragment()
 
-    private lateinit var lastUpdatedDate: Date
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     }
 
+     @RequiresApi(Build.VERSION_CODES.O)
      override fun checkAppStartUp() {
 
             val uri = intent.data
@@ -82,11 +84,13 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun checkLastApiCall() {
         val prevDate = sharedPreferences.getString("DATE_PREF", "")
-        val currentDate = Calendar.getInstance().time
+        val currentDate = LocalDateTime.now()
         Log.d("TAG_J", "prevDate: ${prevDate.isNullOrEmpty()}")
         if (prevDate.isNullOrEmpty()){
+            Log.d("TAG_J", "checkLastApiCall: timer set")
             sharedPreferences.edit().putString("DATE_PREF", currentDate.toString()).apply()
             gittoViewModel.populateDB()
             View.VISIBLE.apply {
@@ -94,8 +98,21 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                 binding.mainViewPager.visibility = this
             }
         }else{
-        //TODO: check if has been 24h past
-            updateMainActivityUI()
+            Log.d("TAG_J", "checkLastApiCall: checking timer")
+            val prevDateTime = LocalDateTime.parse(prevDate)
+            val diff = currentDate.minusHours(24)
+            if (prevDateTime <= diff){
+                Log.d("TAG_J", "checkLastApiCall: 24h has pass set")
+                gittoViewModel.getRepository().updateDataBase()
+                View.VISIBLE.apply {
+                    binding.mainNavigationView.visibility = this
+                    binding.mainViewPager.visibility = this
+                }
+            }else{
+                Log.d("TAG_J", "checkLastApiCall: 24h since last api call has not past")
+                updateMainActivityUI()
+            }
+
         }
     }
 
@@ -118,15 +135,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     }
 
-
-
-    private fun addUser(username: String){
-        //Adding users from API to RoomDatabase
-        gittoViewModel.getGitUser(username)
-
-        //Reading all data from room database
-//        gittoViewModel.readDataFromDB()
-    }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         //Not implemented -- not needed
@@ -161,7 +169,12 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     }
 
     override fun onBackPressed() {
-        //TODO: implement backPress after successful login
+        val fm: FragmentManager = supportFragmentManager
+        val ft: FragmentTransaction = fm.beginTransaction()
+        if (fm.getBackStackEntryCount() > 1) {
+            fm.popBackStack()
+        }
+        ft.commit()
     }
 
     override fun gitHubLogin() {
@@ -178,8 +191,8 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         }
     }
 
-    override fun displayRepositoriesFragment() {
-        Log.d("TAG_X", "User click-main")
+
+    override fun displayRepositoriesFragment(login: String) {
 
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -188,7 +201,11 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                         android.R.anim.fade_in,
                         android.R.anim.fade_out
                 )
-                .replace(R.id.home_frameLayout, repositoriesFragment)
+                .replace(R.id.home_frameLayout, repositoriesFragment.also {
+                    val bundle = Bundle()
+                    bundle.putString("USER", login)
+                    it.arguments = bundle
+                })
                 .addToBackStack(repositoriesFragment.tag)
                 .commit()
     }

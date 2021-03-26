@@ -1,24 +1,24 @@
 package com.britishbroadcast.gitto.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.britishbroadcast.gitto.databinding.UserItemLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
-import com.britishbroadcast.gitto.view.fragment.AddFragment
-import com.britishbroadcast.gitto.view.fragment.HomeFragment
+import com.britishbroadcast.gitto.view.fragment.UserFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegateHomeFragment: HomeFragment): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
+class UserItemAdapter(var owners: MutableList<GitResponse>, val userItemDelegateHomeFragment: UserFragment): RecyclerView.Adapter<UserItemAdapter.UserItemViewHolder>() {
 
     inner class UserItemViewHolder(val binding: UserItemLayoutBinding): RecyclerView.ViewHolder(binding.root){
 
     }
 
     interface UserItemDelegate{
-        fun showRepositories()
+        fun showRepositories(login: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
@@ -40,14 +40,25 @@ class UserItemAdapter(var owners: List<GitResponse>, val userItemDelegateHomeFra
         }
 
         holder.itemView.setOnClickListener {
-            userItemDelegateHomeFragment?.showRepositories()
+            userItemDelegateHomeFragment.showRepositories(owners[position][0].owner.login)
         }
     }
 
     override fun getItemCount(): Int = owners.size
 
     fun updateOwners(owners: List<GitResponse>){
-        this.owners = owners
+        if(this.owners.isNotEmpty()){
+            owners.forEach {
+                if(!this.owners.contains(it))
+                    this.owners.add(it)
+            }
+        }else{
+            var newList = mutableListOf<GitResponse>()
+            owners.forEach {
+                newList.add(it)
+            }
+            this.owners = newList
+        }
         notifyDataSetChanged()
     }
 

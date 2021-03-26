@@ -31,9 +31,10 @@ class GittoRepository(application: Application) {
 
     val gitSearchResponseLiveData = MutableLiveData<List<Item>>()
 
+    val gitRepositoryLiveData = MutableLiveData<List<GitResponse>>()
+
     var gitResponseList = mutableListOf<GitResponse>()
 
-    var gitSearchUserByNameList = mutableListOf<GitUsersResponse>()
 
     fun getDataBase(): GittoDataBase{
         return gittoDataBase
@@ -47,10 +48,9 @@ class GittoRepository(application: Application) {
                         .subscribeOn(Schedulers.io())
                         .subscribe({
                             // Adding to the DB
-                            var gittoData = GittoData(it)
+                            val gitResponse = Gson().fromJson(it, GitResponse::class.java)
+                            var gittoData = GittoData(gitResponse[0].owner.login,it)
                             gittoDataBase.gittoDAO().insertGittoItem(gittoData)
-
-                            val gitResponse = Gson().fromJson(gittoData.userData, GitResponse::class.java)
                             gitResponseList.add(gitResponse)
                             gitResponseLiveData.postValue(gitResponseList)
 //                            compositeDisposable.clear()
@@ -76,6 +76,15 @@ class GittoRepository(application: Application) {
                             Log.d("TAG_J", it.localizedMessage)
                         })
         )
+    }
+
+    fun updateDataBase(){
+        val previousData = gittoDataBase.gittoDAO().getAllItems()
+        gittoDataBase.clearAllTables()
+        previousData.forEach {
+            getUserName(it.userName)
+        }
+
     }
 
 }

@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Adapter
+import android.widget.Toast
+import androidx.core.content.contentValuesOf
 import androidx.recyclerview.widget.RecyclerView
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.UserItemLayoutBinding
@@ -40,6 +42,7 @@ class SearchUserItemAdapter(var usersList: List<Item>, val searchUserItemDelegat
             usersList[position].let {item ->
                 holder.itemView.setOnClickListener {
                     searchUserItemDelegate.addUser(item.login)
+                    Toast.makeText(holder.itemView.context,"${item.login} added successfully!", Toast.LENGTH_SHORT).show()
                 }
                 Log.d("TAG_J", "onBindViewHolder: ${item.login}")
                 userNameTextview.text = item.login
@@ -48,17 +51,10 @@ class SearchUserItemAdapter(var usersList: List<Item>, val searchUserItemDelegat
                         .load(item.avatar_url)
                         .into(userAvatarImageview)
             }
-//            usersList.forEach {
-//
-//            }
-
 
 
         }
 
-//        holder.itemView.setOnClickListener {
-//            searchUserItemDelegate?.showRepositories()
-//        }
     }
 
     override fun getItemCount(): Int = usersList.size
