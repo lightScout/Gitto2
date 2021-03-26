@@ -56,8 +56,6 @@ class LoginScreenFragment: Fragment() {
             this.signupWithGithubTextView.setOnClickListener {
                 loginDelegate.gitHubLogin()
 
-
-
             }
 
             this.loginButton.setOnClickListener {
@@ -175,5 +173,9 @@ class LoginScreenFragment: Fragment() {
             }
             else -> return true
         }
+    }
+
+    fun githubLogin(){
+
     }
 }
