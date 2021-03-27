@@ -1,9 +1,7 @@
 package com.britishbroadcast.gitto.view.ui
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,33 +12,33 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import androidx.viewpager.widget.ViewPager
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.ActivityMainBinding
-import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
-import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
 import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.view.fragment.UserFragment
 import com.britishbroadcast.gitto.view.ui.fragment.LoginScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.OAuthProvider
+import java.io.IOException
+import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, LoginScreenFragment.LoginDelegate, RepositoriesFragment.RepositoryInterface, UserFragment.UserFragmentInterface {
-    private val splashScreenFragment = SplashScreenFragment()
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, RepositoriesFragment.RepositoryInterface, UserFragment.UserFragmentInterface {
+    private  var  splashScreenFragment = SplashScreenFragment()
     private val loginScreenFragment = LoginScreenFragment()
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
     private val gittoViewModel: GittoViewModel by viewModels()
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var encryptedSharedPreferences: SharedPreferences
     private val repositoriesFragment = RepositoriesFragment()
 
 
@@ -53,7 +51,9 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
         sharedPreferences = getSharedPreferences("GITTO_PREF", Context.MODE_PRIVATE)
 
-        checkAppStartUp()
+        initializeEncyptedSP()
+
+        callSplashScreenFragment()
 
         //ViewPager Adapter
         gittoViewPagerAdapter = GittoViewPagerAdapter(supportFragmentManager)
@@ -71,17 +71,42 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     }
 
+    private fun initializeEncyptedSP() {
+        try{
+
+            // Creating Master Key for encryption
+           val  masterKey = MasterKey.Builder(this).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+
+            encryptedSharedPreferences = EncryptedSharedPreferences.create(
+                this,
+                packageName,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+
+            )
+        }catch (e: GeneralSecurityException) {
+            e.printStackTrace();
+        } catch ( e: IOException) {
+            e.printStackTrace();
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun checkAppStartUp() {
-
         val uri = intent.data
-        if (uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
 
+
+        if(FirebaseAuth.getInstance().currentUser?.isEmailVerified == true || encryptedSharedPreferences.getString("GIT_HUB_TOKEN", "") != ""){
+            Log.d("TAG_J", "checkAppStartUp: Authenticated")
+            updateMainActivityUI()
+        }
+        else if (uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
+            encryptedSharedPreferences.edit().putString("GIT_HUB_TOKEN", uri.getQueryParameter("code")).apply()
             Toast.makeText(this, "Successfully logged in with GitHub!", Toast.LENGTH_SHORT).show()
-            checkLastApiCall()
-        } else {
+            updateMainActivityUI()
+        }else{
             callSplashScreenFragment()
-
         }
 
     }
@@ -96,10 +121,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
             Log.d("TAG_J", "checkLastApiCall: timer set")
             sharedPreferences.edit().putString("DATE_PREF", currentDate.toString()).apply()
             gittoViewModel.populateDB()
-            View.VISIBLE.apply {
-                binding.mainNavigationView.visibility = this
-                binding.mainViewPager.visibility = this
-            }
         } else {
             Log.d("TAG_J", "checkLastApiCall: checking timer")
             val prevDateTime = LocalDateTime.parse(prevDate)
@@ -107,13 +128,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
             if (prevDateTime <= diff) {
                 Log.d("TAG_J", "checkLastApiCall: 24h has pass set")
                 gittoViewModel.getRepository().updateDataBase()
-                View.VISIBLE.apply {
-                    binding.mainNavigationView.visibility = this
-                    binding.mainViewPager.visibility = this
-                }
+
             } else {
                 Log.d("TAG_J", "checkLastApiCall: 24h since last api call has not past")
-                updateMainActivityUI()
+                gittoViewModel.getRepository().gitResponseLiveData.postValue(gittoViewModel.getAllDataFromDB())
             }
 
         }
@@ -128,11 +146,11 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     private fun callSplashScreenFragment() {
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out,
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out
-                ).replace(R.id.main_frameLayout, splashScreenFragment)
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out,
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                ).add(R.id.main_frameLayout, splashScreenFragment)
                 .addToBackStack(splashScreenFragment.tag)
                 .commit()
 
@@ -155,21 +173,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         //Not implemented -- not needed
     }
 
-    override fun callLoginScreenFragment() {
-
-        supportFragmentManager.popBackStack()
-        supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out,
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out
-                ).replace(R.id.main_frameLayout, loginScreenFragment)
-                .addToBackStack(null)
-                .commit()
-
-
-    }
 
 
     override fun onBackPressed() {
@@ -181,46 +184,18 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
         ft.commit()
     }
 
-    override fun gitHubLogin() {
-//
-//        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$GIT_REQUEST_URL" + "?client_id=" + "$GIT_CLIENT_ID" + "&redirect_url=" + "${GIT_REDIRECT_URI}"))
-//        startActivity(intent)
-//        val provider = OAuthProvider.newBuilder("github.com")
-        val provider = OAuthProvider.newBuilder("https://github.com/login/oauth/authorize")
-        provider.addCustomParameter("client_id", GIT_CLIENT_ID)
-        provider.addCustomParameter("redirect_uri","https://gitto-26117.firebaseapp.com/__/auth/handler")
-
-//        val pendingResultTask: Task<AuthResult>? =
-
-        FirebaseAuth.getInstance().pendingAuthResult?.let {
-            it
-                    .addOnSuccessListener {
-                        if (it != null) {
-                            Log.d("TAG_J", "Welcome Back!")
-                        }
-                    }
-                    .addOnFailureListener {
-                        Log.d("TAG_J", "gitHubLogin, something went wrong: ${it.localizedMessage}")
-                    }
-        } ?: FirebaseAuth.getInstance().startActivityForSignInWithProvider(this, provider.build())
-                .addOnSuccessListener {
-                    Log.d("TAG_J", "gitHubLogin with firebase true: ${it.credential}")
-                }
-                .addOnFailureListener {
-                    Log.d("TAG_J", "gitHubLogin with firebase false: ${it.localizedMessage}")
-                }
 
 
-    }
-
-
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun updateMainActivityUI() {
-        gittoViewModel.getRepository().gitResponseLiveData.postValue(gittoViewModel.getAllDataFromDB())
-        View.VISIBLE.apply {
-            binding.mainNavigationView.visibility = this
-            binding.mainViewPager.visibility = this
-        }
+        binding.mainFrameLayout.visibility = View.GONE
+
+
+            Log.d("TAG_J", "updateMainActivityUI: set visibility $this")
+            binding.mainNavigationView.visibility = View.VISIBLE
+            binding.mainViewPager.visibility = View.VISIBLE
+
+        checkLastApiCall()
     }
 
 
@@ -228,10 +203,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out,
-                        android.R.anim.fade_in,
-                        android.R.anim.fade_out
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out,
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
                 )
                 .replace(R.id.home_frameLayout, repositoriesFragment.also {
                     val bundle = Bundle()
@@ -240,6 +215,11 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
                 })
                 .addToBackStack(repositoriesFragment.tag)
                 .commit()
+    }
+
+    fun dismishSplashScreen(){
+            supportFragmentManager.popBackStack()
+
     }
 
 
