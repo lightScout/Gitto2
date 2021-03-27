@@ -77,7 +77,8 @@ class SplashScreenFragment : Fragment() {
             FirebaseAuth.getInstance().currentUser?.let {
                 closeSplashScreenToMainActivity()
             } ?: {
-                callLoginLayout(animFadeIn)
+                callChooser(animFadeIn)
+//                callLoginLayout(animFadeIn)
             }()
 
         }
@@ -85,14 +86,18 @@ class SplashScreenFragment : Fragment() {
 
     }
 
+    private fun callChooser(animFadeIn: Animation) {
+        binding.chooserLayout.animation = animFadeIn
+        binding.chooserLayout.visibility = View.VISIBLE
+
+    }
+
     private fun callLoginLayout(animFadeIn: Animation) {
-        binding.loginLayout.animation = animFadeIn
-        binding.loginLayout.visibility = View.VISIBLE
+//        binding.loginLayout.animation = animFadeIn
+//        binding.loginLayout.visibility = View.VISIBLE
 
 
-        binding.gitHubLogoImageview.setOnClickListener {
-            checkPendingResult()
-        }
+
     }
 
     private fun checkPendingResult() {
