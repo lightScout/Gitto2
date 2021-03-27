@@ -11,4 +11,8 @@
     <string name="register_button_text">Register</string>
     <string name="chooser_info_text">Bring together your projects, followers and work group</string>
     <string name="chooser_title_text">GitHub repositories and commits tracker.</string>
+    <string name="lets_sign_you_in_text">Lets sign you in.</string>
+    <string name="welcome_back_text">Welcome back.</string>
+    <string name="do_not_have_an_account_yet_text">Do not have an account yet?</string>
+    <string name="register_text">Register</string>
 </resources>

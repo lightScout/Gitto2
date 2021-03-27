@@ -77,25 +77,55 @@ class SplashScreenFragment : Fragment() {
             FirebaseAuth.getInstance().currentUser?.let {
                 closeSplashScreenToMainActivity()
             } ?: {
-                callChooser(animFadeIn)
-//                callLoginLayout(animFadeIn)
+                callChooserLayout(animFadeIn)
             }()
+
+            // Calling sign in layout
+            binding.loginButton.setOnClickListener {
+                lifecycleScope.launch {
+
+                    val dismissChooserAni: Job = launch {
+                        binding.chooserLayout.animation =
+                            AnimationUtils.loadAnimation(thisContext, android.R.anim.fade_out)
+                        binding.chooserLayout.visibility = View.INVISIBLE
+                        delay(1000)
+                    }
+                    dismissChooserAni.join()
+
+                    callLoginLayout(animFadeIn)
+                }
+            }
+
+            binding.backIconImageView.setOnClickListener {
+                lifecycleScope.launch {
+
+                    val dismissSignInLayout: Job = launch {
+                        binding.singInLayout.animation =
+                            AnimationUtils.loadAnimation(thisContext, android.R.anim.fade_out)
+                        binding.singInLayout.visibility = View.INVISIBLE
+                        delay(1000)
+                    }
+
+                    dismissSignInLayout.join()
+                    callChooserLayout(animFadeIn)
+
+                }
+            }
 
         }
 
 
     }
 
-    private fun callChooser(animFadeIn: Animation) {
+    private fun callChooserLayout(animFadeIn: Animation) {
         binding.chooserLayout.animation = animFadeIn
         binding.chooserLayout.visibility = View.VISIBLE
 
     }
 
     private fun callLoginLayout(animFadeIn: Animation) {
-//        binding.loginLayout.animation = animFadeIn
-//        binding.loginLayout.visibility = View.VISIBLE
-
+        binding.singInLayout.animation = animFadeIn
+        binding.singInLayout.visibility = View.VISIBLE
 
 
     }

@@ -1,56 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <ImageView
         android:id="@+id/logo_imageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="invisible"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+
+    <!--chooser section-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/chooser_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/layout_margin_16dp"
-        android:visibility="invisible"
-        >
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/chooser_imageView"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/chooser_title_textView"
             android:layout_margin="@dimen/layout_margin_16dp"
             android:src="@drawable/login_choser_image"
-            />
+            app:layout_constraintBottom_toTopOf="@id/chooser_title_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/chooser_title_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chooser_imageView"
             android:layout_margin="@dimen/layout_margin_16dp"
+            android:gravity="center"
             android:text="@string/chooser_title_text"
+            android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="@color/black"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chooser_imageView" />
 
         <TextView
             android:id="@+id/chooser_info_textView"
@@ -65,9 +63,9 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/register_button"
+            style="@style/ChooserButtons"
             android:layout_width="100dp"
             android:layout_height="60dp"
-            style="@style/ChooserButtons"
             android:text="@string/register_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/login_button"
@@ -76,9 +74,9 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login_button"
+            style="@style/ChooserButtons"
             android:layout_width="100dp"
             android:layout_height="60dp"
-            style="@style/ChooserButtons"
             android:text="@string/sign_in_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,9 +84,123 @@
             app:layout_constraintTop_toBottomOf="@+id/chooser_info_textView" />
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--sign in section-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sing_in_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/layout_margin_16dp"
+        android:visibility="invisible"
+        >
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/p65_guideline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".35" />
+
+        <ImageView
+            android:id="@+id/back_icon_imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintBottom_toTopOf="@id/sign_in_title_textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+
+        <TextView
+            android:id="@+id/sign_in_title_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:text="@string/welcome_back_text"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/sign_in_message_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back_icon_imageView" />
+
+        <TextView
+            android:id="@+id/sign_in_message_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:text="@string/lets_sign_you_in_text"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sign_in_title_textView" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/si_email_editText"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:background="@drawable/edit_text_border"
+            android:gravity="center"
+            android:hint="@string/email_hint_text"
+            app:layout_constraintBottom_toTopOf="@id/si_password_editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/p65_guideline" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/si_password_editText"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:background="@drawable/edit_text_border"
+            android:gravity="center"
+            android:hint="@string/password_hint_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/si_email_editText" />
+
+        <TextView
+            android:id="@+id/no_account_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/layout_margin_16dp"
+            android:text="@string/do_not_have_an_account_yet_text"
+            app:layout_constraintBottom_toTopOf="@id/sign_in_button"
+            app:layout_constraintEnd_toStartOf="@id/register_textView"
+            app:layout_constraintStart_toStartOf="parent"
+
+            />
+
+        <TextView
+            android:id="@+id/register_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_text"
+            android:textStyle="bold"
+
+            app:layout_constraintBottom_toBottomOf="@+id/no_account_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/no_account_textView"
+            app:layout_constraintTop_toTopOf="@+id/no_account_textView" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/sign_in_button"
+            style="@style/ChooserButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:text="@string/sign_in_button_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
