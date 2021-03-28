@@ -284,6 +284,7 @@
             android:background="@drawable/edit_text_border"
             android:gravity="center"
             android:hint="@string/email_hint_text"
+            android:inputType="textEmailAddress"
             app:layout_constraintBottom_toTopOf="@id/reg_password_editText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -297,6 +298,7 @@
             android:background="@drawable/edit_text_border"
             android:gravity="center"
             android:hint="@string/password_hint_text"
+            android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/reg_email_editText"
@@ -310,10 +312,20 @@
             android:background="@drawable/edit_text_border"
             android:gravity="center"
             android:hint="@string/confirm_password_text"
+            android:inputType="textPassword"
             app:layout_constraintBottom_toTopOf="@id/reg_git_hub_icon_cardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/reg_password_editText" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_password_confirmation_editText"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:src="@drawable/ic_eye"
+            />
 
 
         <androidx.cardview.widget.CardView
@@ -327,6 +339,7 @@
             app:layout_constraintTop_toBottomOf="@id/reg_password_confirmation_editText">
 
             <ImageView
+                android:id="@+id/reg_show_password_icon_imageView"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:padding="4dp"
