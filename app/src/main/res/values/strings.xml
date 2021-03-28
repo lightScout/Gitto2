@@ -12,7 +12,13 @@
     <string name="chooser_info_text">Bring together your projects, followers and work group</string>
     <string name="chooser_title_text">GitHub repositories and commits tracker.</string>
     <string name="lets_sign_you_in_text">Lets sign you in.</string>
-    <string name="welcome_back_text">Welcome back.</string>
+    <string name="welcome_back_text">Welcome!</string>
     <string name="do_not_have_an_account_yet_text">Do not have an account yet?</string>
     <string name="register_text">Register</string>
+    <string name="reg_title_text">Exciting time!</string>
+    <string name="reg_message_text">Lets get you registered.</string>
+    <string name="confirm_password_text">Confirm password</string>
+    <string name="reg_success_text">A verification email has been sent to the email address used for registration.</string>
+    <string name="continue_button_text">Continue</string>
+    <string name="reg_success_title_text">Success!</string>
 </resources>

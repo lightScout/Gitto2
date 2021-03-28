@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -31,9 +32,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, RepositoriesFragment.RepositoryInterface, UserFragment.UserFragmentInterface {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, SplashScreenFragment.SplashScreenInterface, RepositoriesFragment.RepositoryInterface {
     private  var  splashScreenFragment = SplashScreenFragment()
-    private val loginScreenFragment = LoginScreenFragment()
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
     private val gittoViewModel: GittoViewModel by viewModels()
@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -185,40 +184,44 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Splash
     }
 
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun updateMainActivityUI() {
+        binding.mainFrameLayout.animation =
+            AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
         binding.mainFrameLayout.visibility = View.GONE
 
+//        dismissSplashScreen()
 
             Log.d("TAG_J", "updateMainActivityUI: set visibility $this")
             binding.mainNavigationView.visibility = View.VISIBLE
             binding.mainViewPager.visibility = View.VISIBLE
 
-        checkLastApiCall()
+//        checkLastApiCall()
     }
 
+//
+//    override fun displayRepositoriesFragment(login: String) {
+//
+//        supportFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    android.R.anim.fade_in,
+//                    android.R.anim.fade_out,
+//                    android.R.anim.fade_in,
+//                    android.R.anim.fade_out
+//                )
+//                .replace(R.id.home_frameLayout, repositoriesFragment.also {
+//                    val bundle = Bundle()
+//                    bundle.putString("USER", login)
+//                    it.arguments = bundle
+//                })
+//                .addToBackStack(repositoriesFragment.tag)
+//                .commit()
+//    }
 
-    override fun displayRepositoriesFragment(login: String) {
-
-        supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out,
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out
-                )
-                .replace(R.id.home_frameLayout, repositoriesFragment.also {
-                    val bundle = Bundle()
-                    bundle.putString("USER", login)
-                    it.arguments = bundle
-                })
-                .addToBackStack(repositoriesFragment.tag)
-                .commit()
-    }
-
-    fun dismishSplashScreen(){
+    fun dismissSplashScreen(){
+        runOnUiThread {
             supportFragmentManager.popBackStack()
+        }
+
 
     }
 

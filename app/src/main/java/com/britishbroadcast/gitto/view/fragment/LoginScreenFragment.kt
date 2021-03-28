@@ -104,102 +104,13 @@ class LoginScreenFragment: Fragment() {
 //        loginDelegate = (context as MainActivity)
 //    }
 //
-//    private fun signUpNewUser() {
-//        val email = binding.suEmailEditText.text.toString().trim()
-//        val password = binding.suPasswordEditText.text.toString().trim()
+
 //
-//        FirebaseAuth.getInstance()
-//                .createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener {
-//                    if (it.isSuccessful) {
-//                        Toast.makeText(context, "Sign up complete. Please verify your account through the verification email sent to you.", Toast.LENGTH_LONG).show()
-//                        FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
+
 //
-//                        val animation2 =
-//                                AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
+
 //
-//                        binding.signUpCardView.animation = animation2
-//
-//                        binding.signUpCardView.visibility = View.INVISIBLE
-//
-//                    } else {
-//                        Toast.makeText(context, "${it.exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
-//                        Log.d("TAG_J", "signUpNewUser error: ${it.exception?.localizedMessage}")
-//
-//                    }
-//                }
-//    }
-//
-//    private fun loginUser() {
-//
-//        val email = binding.liEmailEdittext.text.toString()
-//        val password = binding.liPasswordEditext.text.toString()
-//
-//        FirebaseAuth.getInstance()
-//                .signInWithEmailAndPassword(email, password)
-//                .addOnCompleteListener {
-//                    if (it.isSuccessful) {
-//                        if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
-//                            Toast.makeText(context, "User login successful!", Toast.LENGTH_SHORT).show()
-//                            loginDelegate.updateMainActivityUI()
-//
-//                        } else
-//                            Toast.makeText(context, "Please verify your account before signing in!", Toast.LENGTH_SHORT)
-//                                    .show()
-//                    } else {
-//                        Toast.makeText(
-//                                context, "Sorry, Something went wrong. Please try again",
-//                                Toast.LENGTH_SHORT
-//                        ).show()
-//                        Log.d("TAG_J", "loginUser error: ${it.exception?.localizedMessage}")
-//                    }
-//                }
-//    }
-//
-//    private fun validLogin(): Boolean {
-//        return when {
-//            binding.liEmailEdittext.text.isEmpty() -> {
-//                Toast.makeText(context, "Email cannot be empty!", Toast.LENGTH_SHORT).show()
-//                false
-//            }
-//            binding.liPasswordEditext.text.isEmpty() -> {
-//                Toast.makeText(context, "Password cannot be empty!", Toast.LENGTH_SHORT).show()
-//                false
-//            }
-//            else -> true
-//        }
-//    }
-//
-//    private fun validSignUp(): Boolean {
-//        when {
-//            binding.suEmailEditText.text.isEmpty() -> {
-//                Toast.makeText(context, "Email cannot be empty!", Toast.LENGTH_SHORT).show()
-//                return false
-//            }
-//            binding.suPasswordEditText.text.isEmpty() -> {
-//                Toast.makeText(context, "Password cannot be empty!", Toast.LENGTH_SHORT).show()
-//                return false
-//            }
-//            binding.suConfirmPasswordEditText.text.isEmpty() -> {
-//                Toast.makeText(
-//                        context,
-//                        "Confirm password cannot be empty!",
-//                        Toast.LENGTH_SHORT
-//                ).show()
-//                return false
-//            }
-//            (binding.suConfirmPasswordEditText.text.toString() != binding.suPasswordEditText.text.toString()) -> {
-//                Toast.makeText(
-//                        context,
-//                        "Password do not match",
-//                        Toast.LENGTH_SHORT
-//                )
-//                        .show()
-//                return false
-//            }
-//            else -> return true
-//        }
-//    }
+
 //
 //    fun githubLogin(){
 

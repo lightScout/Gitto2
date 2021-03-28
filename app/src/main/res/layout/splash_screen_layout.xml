@@ -91,15 +91,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/layout_margin_16dp"
-        android:visibility="invisible"
-        >
+        android:visibility="invisible">
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/p65_guideline"
+            android:id="@+id/signIn_p20_guideline"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".35" />
+            app:layout_constraintGuide_percent=".20" />
 
         <ImageView
             android:id="@+id/back_icon_imageView"
@@ -147,10 +146,11 @@
             android:background="@drawable/edit_text_border"
             android:gravity="center"
             android:hint="@string/email_hint_text"
+            android:inputType="textEmailAddress"
             app:layout_constraintBottom_toTopOf="@id/si_password_editText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/p65_guideline" />
+            app:layout_constraintTop_toBottomOf="@id/signIn_p20_guideline" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/si_password_editText"
@@ -160,9 +160,31 @@
             android:background="@drawable/edit_text_border"
             android:gravity="center"
             android:hint="@string/password_hint_text"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@id/git_hub_icon_cardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/si_email_editText" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/git_hub_icon_cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="90dp"
+            app:layout_constraintBottom_toTopOf="@id/no_account_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/si_password_editText">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:padding="4dp"
+                android:src="@drawable/github_icon" />
+
+        </androidx.cardview.widget.CardView>
+
 
         <TextView
             android:id="@+id/no_account_textView"
@@ -198,6 +220,203 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--register section-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/register_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/layout_margin_16dp"
+        android:visibility="invisible">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/reg_p25_guideline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".25" />
+
+        <ImageView
+            android:id="@+id/reg_back_icon_imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintBottom_toTopOf="@id/reg_title_textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+
+        <TextView
+            android:id="@+id/reg_title_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:text="@string/reg_title_text"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/reg_message_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_back_icon_imageView" />
+
+        <TextView
+            android:id="@+id/reg_message_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:text="@string/reg_message_text"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_title_textView" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/reg_email_editText"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:background="@drawable/edit_text_border"
+            android:gravity="center"
+            android:hint="@string/email_hint_text"
+            app:layout_constraintBottom_toTopOf="@id/reg_password_editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_p25_guideline" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/reg_password_editText"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:background="@drawable/edit_text_border"
+            android:gravity="center"
+            android:hint="@string/password_hint_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_email_editText"
+            app:layout_constraintBottom_toTopOf="@id/reg_password_confirmation_editText"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/reg_password_confirmation_editText"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:background="@drawable/edit_text_border"
+            android:gravity="center"
+            android:hint="@string/confirm_password_text"
+            app:layout_constraintBottom_toTopOf="@id/reg_git_hub_icon_cardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_password_editText" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/reg_git_hub_icon_cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="90dp"
+            app:layout_constraintBottom_toTopOf="@id/reg_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_password_confirmation_editText">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:padding="4dp"
+                android:src="@drawable/github_icon" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/reg_button"
+            style="@style/ChooserButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            android:text="@string/register_button_text"
+            app:layout_constraintTop_toBottomOf="@id/reg_git_hub_icon_cardView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--registering success section-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reg_success_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/layout_margin_16dp"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/reg_success_title_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/reg_success_cardView"
+            android:text="@string/reg_success_title_text"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="40sp"
+            android:textColor="@android:color/black"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/reg_success_cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_success_title_textView"
+            app:layout_constraintBottom_toTopOf="@id/reg_success_textView"
+            app:cardCornerRadius="360dp"
+            android:layout_margin="@dimen/layout_margin_16dp"
+            >
+
+            <ImageView
+                android:id="@+id/reg_success_imageView"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@drawable/reg_successfully"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/reg_success_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reg_success_cardView"
+            app:layout_constraintBottom_toTopOf="@id/continue_button"
+            android:text="@string/reg_success_text"
+            android:gravity="center"
+            android:textStyle="bold"
+            />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/continue_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/ChooserButtons"
+            android:text="@string/continue_button_text"
+            />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

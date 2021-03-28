@@ -52,10 +52,10 @@ class UserFragment(val userFragmentDelete: HomeFragment): Fragment(), UserItemAd
         gittoViewModel.getRepository().gitRepositoryLiveData.postValue(gitReposeList)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        userFragmentInterface = (context as MainActivity)
-    }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        userFragmentInterface = (context as MainActivity)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()
