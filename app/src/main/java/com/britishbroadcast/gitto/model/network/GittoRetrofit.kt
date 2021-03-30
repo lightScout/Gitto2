@@ -2,6 +2,7 @@ package com.britishbroadcast.gitto.model.network
 
 import android.util.Log
 import com.britishbroadcast.gitto.model.data.GitResponse
+import com.britishbroadcast.gitto.model.data.GitUserCommit
 import com.britishbroadcast.gitto.model.data.GitUsersResponse
 import com.britishbroadcast.gitto.util.Constants.Companion.BASE_URL
 import io.reactivex.Single
@@ -43,5 +44,9 @@ class GittoRetrofit {
     fun getGitUser(userName: String): Single<String> = gittoService.getGitUser(userName)
 
     fun searchUserByName(userName: String): Single<GitUsersResponse> = gittoService.searchUserByName(userName)
+
+
+    fun getGitUserRepositoryCommits(userName: String, repositoryName: String): Single<GitUserCommit> =
+        gittoService.getGitUserRepositoryCommits(userName, repositoryName)
 
 }

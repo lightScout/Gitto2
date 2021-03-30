@@ -27,7 +27,7 @@ import java.time.LocalDateTime
 
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
-    SplashScreenFragment.SplashScreenInterface, RepositoriesFragment.RepositoryInterface {
+    SplashScreenFragment.SplashScreenInterface{
     private lateinit var splashScreenFragment: SplashScreenFragment
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
@@ -176,6 +176,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
         checkLastApiCall()
     }
+
 
 
 }

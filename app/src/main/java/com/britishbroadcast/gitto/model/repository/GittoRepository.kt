@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
-import com.britishbroadcast.gitto.model.data.GitResponse
-import com.britishbroadcast.gitto.model.data.GitUsersResponse
-import com.britishbroadcast.gitto.model.data.GittoData
-import com.britishbroadcast.gitto.model.data.Item
+import com.britishbroadcast.gitto.model.data.*
 import com.britishbroadcast.gitto.model.network.GittoRetrofit
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,6 +29,8 @@ class GittoRepository(application: Application) {
     val gitSearchResponseLiveData = MutableLiveData<List<Item>>()
 
     val gitRepositoryLiveData = MutableLiveData<List<GitResponse>>()
+
+    val gitCommitsLiveData = MutableLiveData<List<GitUserCommitItem>>()
 
     var gitResponseList = mutableListOf<GitResponse>()
 
@@ -85,6 +84,20 @@ class GittoRepository(application: Application) {
             getUserName(it.userName)
         }
 
+    }
+
+    fun getGitUserRepoCommits(userName: String, repoName: String){
+        compositeDisposable.add(
+            gittoRetrofit.getGitUserRepositoryCommits(userName, repoName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    gitCommitsLiveData.postValue(it)
+                    compositeDisposable.clear()
+                }, {
+                    Log.d("TAG_J", it.localizedMessage)
+                })
+        )
     }
 
 }
