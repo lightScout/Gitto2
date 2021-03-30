@@ -18,11 +18,12 @@ class GittoRepository(application: Application) {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val gittoDataBase = Room.databaseBuilder(application.applicationContext,
-            GittoDataBase::class.java,
-            "gitto.db"
+    private val gittoDataBase = Room.databaseBuilder(
+        application.applicationContext,
+        GittoDataBase::class.java,
+        "gitto.db"
     ).allowMainThreadQueries()
-            .build()
+        .build()
     val gitResponseLiveData = MutableLiveData<List<GitResponse>>()
 
     val gitSearchResponseLiveData = MutableLiveData<List<Item>>()
@@ -34,49 +35,50 @@ class GittoRepository(application: Application) {
     var gitResponseList = mutableListOf<GitResponse>()
 
 
-    fun getDataBase(): GittoDataBase{
+    fun getDataBase(): GittoDataBase {
         return gittoDataBase
     }
 
-    fun getUserName(userName: String){
+    fun getUserName(userName: String) {
 
         compositeDisposable.add(
-                gittoRetrofit.getGitUser(userName)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            // Adding to the DB
-                            val gitResponse = Gson().fromJson(it, GitResponse::class.java)
-                            var gittoData = GittoData(gitResponse[0].owner.login,it)
-                            gittoDataBase.gittoDAO().insertGittoItem(gittoData)
-                            gitResponseList.add(gitResponse)
-                            gitResponseLiveData.postValue(gitResponseList)
+            gittoRetrofit.getGitUser(userName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    // Adding to the DB
+                    val gitResponse = Gson().fromJson(it, GitResponse::class.java)
+                    var gittoData = GittoData(gitResponse[0].owner.login, it)
+                    gittoDataBase.gittoDAO().insertGittoItem(gittoData)
+                    gitResponseList.add(gitResponse)
+                    gitResponseLiveData.postValue(gitResponseList)
 //                            compositeDisposable.clear()
-                        }, {
-                            Log.d("TAG_J", it.localizedMessage)
-                        })
+                }, {
+                    Log.d("TAG_J", it.localizedMessage)
+                })
         )
 
     }
-    fun searchUserByName(userName: String){
+
+    fun searchUserByName(userName: String) {
         compositeDisposable.add(
-                gittoRetrofit.searchUserByName(userName)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .map {
-                            it.items
-                        }
-                        .subscribe({
+            gittoRetrofit.searchUserByName(userName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .map {
+                    it.items
+                }
+                .subscribe({
 
-                            gitSearchResponseLiveData.postValue(it)
-                            compositeDisposable.clear()
-                        }, {
-                            Log.d("TAG_J", it.localizedMessage)
-                        })
+                    gitSearchResponseLiveData.postValue(it)
+                    compositeDisposable.clear()
+                }, {
+                    Log.d("TAG_J", it.localizedMessage)
+                })
         )
     }
 
-    fun updateDataBase(){
+    fun updateDataBase() {
         val previousData = gittoDataBase.gittoDAO().getAllItems()
         gittoDataBase.clearAllTables()
         previousData.forEach {
@@ -85,7 +87,7 @@ class GittoRepository(application: Application) {
 
     }
 
-    fun getGitUserRepoCommits(userName: String, repoName: String){
+    fun getGitUserRepoCommits(userName: String, repoName: String) {
         compositeDisposable.add(
             gittoRetrofit.getGitUserRepositoryCommits(userName, repoName)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -99,7 +101,7 @@ class GittoRepository(application: Application) {
         )
     }
 
-    fun getGitUserPrivateRepo(authorization: String){
+    fun getGitUserPrivateRepo(authorization: String) {
         compositeDisposable.add(
             gittoRetrofit.getGitUserPrivateRepo(authorization)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -107,7 +109,7 @@ class GittoRepository(application: Application) {
                 .subscribe({
 
                     val gitResponse = Gson().fromJson(it, GitResponse::class.java)
-                    var gittoData = GittoData(gitResponse[0].owner.login,it)
+                    var gittoData = GittoData(gitResponse[0].owner.login, it)
                     gittoDataBase.gittoDAO().insertGittoItem(gittoData)
                     gitResponseList.add(gitResponse)
                     gitResponseLiveData.postValue(gitResponseList)
@@ -116,13 +118,13 @@ class GittoRepository(application: Application) {
 //                    Log.d("TAG_X_PRIVATE", "${it[0].private}")
                     //gitPrivateResponseLiveData.postValue(it)
 //                    compositeDisposable.clear()
-                },{
+                }, {
                     Log.d("TAG_J_error", it.localizedMessage)
                 })
         )
     }
 
-    fun getAccessToken(clientID: String, clientSecret: String, code: String){
+    fun getAccessToken(clientID: String, clientSecret: String, code: String) {
         compositeDisposable.add(
             gittoRetrofit.getAccessToken(clientID, clientSecret, code)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -137,7 +139,7 @@ class GittoRepository(application: Application) {
         )
     }
 
-    fun cleanCompositeDisposable(){
+    fun cleanCompositeDisposable() {
         compositeDisposable.clear()
     }
 

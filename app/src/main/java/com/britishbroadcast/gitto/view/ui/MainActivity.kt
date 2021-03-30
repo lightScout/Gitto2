@@ -92,14 +92,14 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun checkLastApiCall(userName: String , oAuth: String ) {
+    private fun checkLastApiCall(userName: String) {
         val prevDate = sharedPreferences.getString("DATE_PREF", "")
         val currentDate = LocalDateTime.now()
         Log.d("TAG_J", "prevDate: ${prevDate.isNullOrEmpty()}")
         if (prevDate.isNullOrEmpty()) {
             Log.d("TAG_J", "checkLastApiCall: timer set")
             sharedPreferences.edit().putString("DATE_PREF", currentDate.toString()).apply()
-            gittoViewModel.populateDB(userName, oAuth)
+            gittoViewModel.populateDB(userName)
         } else {
             Log.d("TAG_J", "checkLastApiCall: checking timer")
             val prevDateTime = LocalDateTime.parse(prevDate)
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun updateMainActivityUI() {
+    override fun updateMainActivityUI(userName: String) {
         binding.mainFrameLayout.animation =
             AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
         binding.mainFrameLayout.visibility = View.GONE
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
         binding.mainNavigationView.visibility = View.VISIBLE
         binding.mainViewPager.visibility = View.VISIBLE
 
-        checkLastApiCall()
+        checkLastApiCall(userName)
     }
 
 

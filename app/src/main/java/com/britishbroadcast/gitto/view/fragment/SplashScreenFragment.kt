@@ -19,6 +19,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.SplashScreenLayoutBinding
+import com.britishbroadcast.gitto.model.data.GitResponse
+import com.britishbroadcast.gitto.model.data.GitResponseItem
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_SECRET
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
@@ -39,7 +41,7 @@ class SplashScreenFragment(
 
 
     interface SplashScreenInterface {
-        fun updateMainActivityUI()
+        fun updateMainActivityUI(userName: String)
     }
 
     private lateinit var binding: SplashScreenLayoutBinding
@@ -86,8 +88,12 @@ class SplashScreenFragment(
                     it
                 )
             }
+            gittoViewModel.getRepository().gitResponseLiveData.observe(viewLifecycleOwner, Observer {
+                splashScreenInterface.updateMainActivityUI(it[0][0].owner.login)
+
+            })
             Toast.makeText(context, "Successfully sign-in with GitHub!", Toast.LENGTH_SHORT).show()
-            splashScreenInterface.updateMainActivityUI()
+
         } else {
             // If not, app logo animation will happen and chooser layout will be presented after that
             lifecycleScope.launch {
@@ -122,7 +128,7 @@ class SplashScreenFragment(
                     ) != ""
                 ) {
                     Toast.makeText(context, "Welcome back", Toast.LENGTH_SHORT).show()
-                    closeSplashScreenToMainActivity()
+                    splashScreenInterface.updateMainActivityUI("")
                 } else {
                     callChooserLayout(animFadeIn)
                 }
@@ -358,7 +364,7 @@ class SplashScreenFragment(
                 if (it.isSuccessful) {
                     if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true) {
                         Toast.makeText(context, "Welcome back!", Toast.LENGTH_SHORT).show()
-                        splashScreenInterface.updateMainActivityUI()
+                        splashScreenInterface.updateMainActivityUI("")
 
                     } else
                         Toast.makeText(
@@ -433,11 +439,6 @@ class SplashScreenFragment(
             }
             else -> return true
         }
-    }
-
-
-    private fun closeSplashScreenToMainActivity() {
-        splashScreenInterface.updateMainActivityUI()
     }
 
     override fun onAttach(context: Context) {

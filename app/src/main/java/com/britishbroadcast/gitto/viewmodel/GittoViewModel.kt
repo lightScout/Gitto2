@@ -38,49 +38,37 @@ class GittoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun populateDB(userName: String, oAuth: String) {
-        // Check wich user has just sign with gitHub
-        // If no user has sign-in with gitHub the app will load the three base user
-        // without any private repos
-        if (oAuth == "") {
-            getGitUser(JUAN)
+    fun populateDB(userName: String) {
+
+        if (userName == "") {
             getGitUser(SAIF)
             getGitUser(MINDA)
+            getGitUser(JUAN)
         } else {
-            if (userName != JUAN && userName != SAIF && userName != MINDA) {
-                getGitUser(JUAN)
-                getGitUser(SAIF)
-                getGitUser(MINDA)
-                gittoRepository.getGitUserPrivateRepo(oAuth)
-            } else {
-
-                when (userName) {
-                    JUAN -> {
-                        getGitUser(SAIF)
-                        getGitUser(MINDA)
-                        gittoRepository.getGitUserPrivateRepo(oAuth)
-                    }
-                    MINDA -> {
-                        getGitUser(JUAN)
-                        getGitUser(SAIF)
-                        gittoRepository.getGitUserPrivateRepo(oAuth)
-                    }
-                    SAIF -> {
-                        getGitUser(MINDA)
-                        getGitUser(JUAN)
-                        gittoRepository.getGitUserPrivateRepo(oAuth)
-                    }
+            when (userName) {
+                JUAN -> {
+                    getGitUser(SAIF)
+                    getGitUser(MINDA)
                 }
-
+                MINDA -> {
+                    getGitUser(JUAN)
+                    getGitUser(SAIF)
+                }
+                SAIF -> {
+                    getGitUser(MINDA)
+                    getGitUser(JUAN)
+                }
             }
+
         }
 
         gittoRepository.cleanCompositeDisposable()
 
 
     }
-
-
 }
+
+
+
 
 
