@@ -106,7 +106,7 @@ class GittoRepository(application: Application) {
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.d("TAG_X_PRIVATE", it[0].owner.login)
-                    Log.d("TAG_X_PRIVATE", it[0].name)
+                    Log.d("TAG_X_PRIVATE", "${it[0].private}")
                     //gitPrivateResponseLiveData.postValue(it)
 //                    compositeDisposable.clear()
                 },{
@@ -121,7 +121,8 @@ class GittoRepository(application: Application) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.d("TAG_J", "${it.accessToken}")
+                    Log.d("TAG_J", "token ${it.accessToken}")
+                    getGitUserPrivateRepo("token ${it.accessToken}")
 //                    compositeDisposable.clear()
                 }, {
                     Log.d("TAG_J_ERROR", it.localizedMessage)
