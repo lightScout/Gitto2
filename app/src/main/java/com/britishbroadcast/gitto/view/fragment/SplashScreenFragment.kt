@@ -36,7 +36,8 @@ import kotlinx.coroutines.launch
 
 class SplashScreenFragment(
     private val activityIntent: Intent,
-    private val encryptedSharedPreferences: SharedPreferences
+    private val encryptedSharedPreferences: SharedPreferences,
+    private val isLogout: Boolean
 ) : Fragment() {
 
 
@@ -84,17 +85,24 @@ class SplashScreenFragment(
                 .putString("GIT_HUB_TOKEN", uri.getQueryParameter("code")).apply()
 //            Log.d("TAG_J", "token:${uri.getQueryParameter("code")} ")
             uri.getQueryParameter("code")?.let {
-                gittoViewModel.getRepository().getAccessToken(GIT_CLIENT_ID, GIT_CLIENT_SECRET,
+                gittoViewModel.getRepository().getAccessToken(
+                    GIT_CLIENT_ID, GIT_CLIENT_SECRET,
                     it
                 )
             }
-            gittoViewModel.getRepository().gitResponseLiveData.observe(viewLifecycleOwner, Observer {
-                splashScreenInterface.updateMainActivityUI(it[0][0].owner.login)
+            gittoViewModel.getRepository().gitResponseLiveData.observe(
+                viewLifecycleOwner,
+                Observer {
+                    splashScreenInterface.updateMainActivityUI(it[0][0].owner.login)
 
-            })
+                })
             Toast.makeText(context, "Successfully sign-in with GitHub!", Toast.LENGTH_SHORT).show()
 
-        } else {
+        } else if (isLogout){
+
+        callChooserLayout(animFadeIn)
+        }
+        else {
             // If not, app logo animation will happen and chooser layout will be presented after that
             lifecycleScope.launch {
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -19,6 +20,7 @@ import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.ActivityMainBinding
 import com.britishbroadcast.gitto.view.adapter.GittoViewPagerAdapter
 import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
+import com.britishbroadcast.gitto.view.fragment.SettingsFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
 import java.io.IOException
@@ -27,7 +29,7 @@ import java.time.LocalDateTime
 
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
-    SplashScreenFragment.SplashScreenInterface{
+    SplashScreenFragment.SplashScreenInterface, SettingsFragment.SettingsDelegate {
     private lateinit var splashScreenFragment: SplashScreenFragment
     private lateinit var binding: ActivityMainBinding
     private lateinit var gittoViewPagerAdapter: GittoViewPagerAdapter
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
         // Only calling splash screen after encryptedSP is initializes
         if (this::encryptedSharedPreferences.isInitialized) {
-            splashScreenFragment = SplashScreenFragment(intent, encryptedSharedPreferences)
+            splashScreenFragment = SplashScreenFragment(intent, encryptedSharedPreferences, false)
             callSplashScreenFragment()
         }
 
@@ -177,6 +179,31 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
         checkLastApiCall(userName)
     }
 
+
+
+    override fun logout() {
+        binding.mainViewPager.animation =  AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
+        binding.mainNavigationView.animation =  AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
+        binding.mainViewPager.visibility = View.INVISIBLE
+        binding.mainNavigationView.visibility = View.INVISIBLE
+        Handler(mainLooper).postDelayed({
+            binding.mainFrameLayout.animation =
+                AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
+            binding.mainFrameLayout.visibility = View.VISIBLE
+
+            val newSplashScreenFragment = SplashScreenFragment(intent, encryptedSharedPreferences, true)
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out,
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                ).replace(R.id.main_frameLayout, newSplashScreenFragment)
+                .addToBackStack(splashScreenFragment.tag)
+                .commit()
+        }, 2000)
+
+    }
 
 
 }

@@ -21,4 +21,5 @@
     <string name="reg_success_text">A verification email has been sent to the email address used for registration.</string>
     <string name="continue_button_text">Continue</string>
     <string name="reg_success_title_text">Success!</string>
+    <string name="logout_button_text">Logout</string>
 </resources>
