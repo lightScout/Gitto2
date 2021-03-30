@@ -49,4 +49,6 @@ class GittoRetrofit {
     fun getGitUserRepositoryCommits(userName: String, repositoryName: String): Single<GitUserCommit> =
         gittoService.getGitUserRepositoryCommits(userName, repositoryName)
 
+    fun getGitUserPrivateRepo(authorization: String): Single<GitResponse> = gittoService.getGitUserPrivateRepo(authorization)
+
 }

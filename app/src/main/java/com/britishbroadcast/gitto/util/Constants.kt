@@ -9,6 +9,7 @@ class Constants {
         const val API_PATH_SINGLE_USER = "users/{user_name}/repos"
         const val API_PATH_MULTIPLE_USERS = "search/users"
         const val API_PATH_COMMITS = "/repos/{user_name}/{repo_name}/commits"
+        const val API_PATH_PRIVATE_REPO = "/user/repos"
         const val REPO_NAME = "repo_name"
         const val Q = "q"
         const val USER_NAME = "user_name"

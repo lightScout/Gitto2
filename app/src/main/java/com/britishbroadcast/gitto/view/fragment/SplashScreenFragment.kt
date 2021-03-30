@@ -75,6 +75,7 @@ class SplashScreenFragment(
         if (uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
             encryptedSharedPreferences.edit()
                 .putString("GIT_HUB_TOKEN", uri.getQueryParameter("code")).apply()
+            Log.d("TAG_J", "token:${uri.getQueryParameter("code")} ")
             Toast.makeText(context, "Successfully sign-in with GitHub!", Toast.LENGTH_SHORT).show()
             splashScreenInterface.updateMainActivityUI()
         } else {

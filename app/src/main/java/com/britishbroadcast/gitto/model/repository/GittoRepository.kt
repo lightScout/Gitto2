@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
 import com.britishbroadcast.gitto.model.data.*
 import com.britishbroadcast.gitto.model.network.GittoRetrofit
@@ -96,6 +95,21 @@ class GittoRepository(application: Application) {
                     compositeDisposable.clear()
                 }, {
                     Log.d("TAG_J", it.localizedMessage)
+                })
+        )
+    }
+
+    fun getGitUserPrivateRepo(authorization: String){
+        compositeDisposable.add(
+            gittoRetrofit.getGitUserPrivateRepo(authorization)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    Log.d("TAG_X_PRIVATE", it[0].owner.login)
+                    Log.d("TAG_X_PRIVATE", it[0].name)
+                    //gitPrivateResponseLiveData.postValue(it)
+                },{
+                    Log.d("TAG_J_error", it.localizedMessage)
                 })
         )
     }
