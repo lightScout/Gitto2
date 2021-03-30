@@ -1,5 +1,6 @@
 package com.britishbroadcast.gitto.model.network
 
+import com.britishbroadcast.gitto.model.data.AccessToken
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.model.data.GitUserCommit
 import com.britishbroadcast.gitto.model.data.GitUsersResponse
@@ -11,10 +12,7 @@ import com.britishbroadcast.gitto.util.Constants.Companion.Q
 import com.britishbroadcast.gitto.util.Constants.Companion.REPO_NAME
 import com.britishbroadcast.gitto.util.Constants.Companion.USER_NAME
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface GittoService {
 
@@ -29,4 +27,13 @@ interface GittoService {
 
     @GET(API_PATH_PRIVATE_REPO)
     fun getGitUserPrivateRepo(@Header("Authorization") authorization: String): Single<GitResponse>
+
+
+    @Headers("Accept: application/json")
+    @POST("login/oauth/access_token")
+    @FormUrlEncoded
+    fun getAccessToken(
+        @Field("client_id") clientID: String,
+        @Field("client_secret") clientSecret: String,
+        @Field("code") code: String): Single<AccessToken>
 }

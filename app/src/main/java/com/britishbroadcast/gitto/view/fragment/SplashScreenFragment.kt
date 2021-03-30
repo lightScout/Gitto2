@@ -13,15 +13,18 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.SplashScreenLayoutBinding
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_ID
+import com.britishbroadcast.gitto.util.Constants.Companion.GIT_CLIENT_SECRET
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REDIRECT_URI
 import com.britishbroadcast.gitto.util.Constants.Companion.GIT_REQUEST_URL
 import com.britishbroadcast.gitto.view.ui.MainActivity
+import com.britishbroadcast.gitto.viewmodel.GittoViewModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -43,6 +46,8 @@ class SplashScreenFragment(
     private lateinit var splashScreenInterface: SplashScreenInterface
 
     private lateinit var thisContext: Context
+
+    private val gittoViewModel by activityViewModels<GittoViewModel>()
 
     private var registerLiveData = MutableLiveData<Task<AuthResult>>()
 
@@ -75,7 +80,12 @@ class SplashScreenFragment(
         if (uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
             encryptedSharedPreferences.edit()
                 .putString("GIT_HUB_TOKEN", uri.getQueryParameter("code")).apply()
-            Log.d("TAG_J", "token:${uri.getQueryParameter("code")} ")
+//            Log.d("TAG_J", "token:${uri.getQueryParameter("code")} ")
+            uri.getQueryParameter("code")?.let {
+                gittoViewModel.getRepository().getAccessToken(GIT_CLIENT_ID, GIT_CLIENT_SECRET,
+                    it
+                )
+            }
             Toast.makeText(context, "Successfully sign-in with GitHub!", Toast.LENGTH_SHORT).show()
             splashScreenInterface.updateMainActivityUI()
         } else {

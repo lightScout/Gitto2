@@ -108,8 +108,23 @@ class GittoRepository(application: Application) {
                     Log.d("TAG_X_PRIVATE", it[0].owner.login)
                     Log.d("TAG_X_PRIVATE", it[0].name)
                     //gitPrivateResponseLiveData.postValue(it)
+//                    compositeDisposable.clear()
                 },{
                     Log.d("TAG_J_error", it.localizedMessage)
+                })
+        )
+    }
+
+    fun getAccessToken(clientID: String, clientSecret: String, code: String){
+        compositeDisposable.add(
+            gittoRetrofit.getAccessToken(clientID, clientSecret, code)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    Log.d("TAG_J", "${it.accessToken}")
+//                    compositeDisposable.clear()
+                }, {
+                    Log.d("TAG_J_ERROR", it.localizedMessage)
                 })
         )
     }
