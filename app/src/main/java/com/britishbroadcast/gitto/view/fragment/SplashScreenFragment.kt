@@ -323,7 +323,7 @@ class SplashScreenFragment(
     private fun startGitHubAlt() {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("$GIT_REQUEST_URL" + "?client_id=" + "$GIT_CLIENT_ID" + "&redirect_url=" + "${GIT_REDIRECT_URI}")
+            Uri.parse("$GIT_REQUEST_URL" + "?client_id=" + "$GIT_CLIENT_ID" + "&scope=repo&redirect_url=" + "${GIT_REDIRECT_URI}")
         )
         startActivity(intent)
     }

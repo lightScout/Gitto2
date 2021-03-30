@@ -53,6 +53,7 @@ class GittoRetrofit {
         return Retrofit.Builder()
             .baseUrl(GIT_TOKEN_REQUEST_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
