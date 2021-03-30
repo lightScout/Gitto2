@@ -92,14 +92,14 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun checkLastApiCall() {
+    private fun checkLastApiCall(userName: String , oAuth: String ) {
         val prevDate = sharedPreferences.getString("DATE_PREF", "")
         val currentDate = LocalDateTime.now()
         Log.d("TAG_J", "prevDate: ${prevDate.isNullOrEmpty()}")
         if (prevDate.isNullOrEmpty()) {
             Log.d("TAG_J", "checkLastApiCall: timer set")
             sharedPreferences.edit().putString("DATE_PREF", currentDate.toString()).apply()
-            gittoViewModel.populateDB()
+            gittoViewModel.populateDB(userName, oAuth)
         } else {
             Log.d("TAG_J", "checkLastApiCall: checking timer")
             val prevDateTime = LocalDateTime.parse(prevDate)

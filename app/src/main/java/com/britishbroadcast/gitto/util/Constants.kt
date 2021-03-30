@@ -18,5 +18,8 @@ class Constants {
         const val GIT_CLIENT_SECRET = "2dc54f244c896286b9e2680b496ae50111146166"
         const val GIT_REQUEST_URL = "https://github.com/login/oauth/authorize"
         const val GIT_REDIRECT_URI = "gitto://callback"
+        const val SAIF = "sifatsaif95"
+        const val MINDA = "MindaRah"
+        const val JUAN = "lightScout"
     }
 }

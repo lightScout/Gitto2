@@ -105,8 +105,15 @@ class GittoRepository(application: Application) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.d("TAG_X_PRIVATE", it[0].owner.login)
-                    Log.d("TAG_X_PRIVATE", "${it[0].private}")
+
+                    val gitResponse = Gson().fromJson(it, GitResponse::class.java)
+                    var gittoData = GittoData(gitResponse[0].owner.login,it)
+                    gittoDataBase.gittoDAO().insertGittoItem(gittoData)
+                    gitResponseList.add(gitResponse)
+                    gitResponseLiveData.postValue(gitResponseList)
+//
+//                    Log.d("TAG_X_PRIVATE", it[0].owner.login)
+//                    Log.d("TAG_X_PRIVATE", "${it[0].private}")
                     //gitPrivateResponseLiveData.postValue(it)
 //                    compositeDisposable.clear()
                 },{
@@ -128,6 +135,10 @@ class GittoRepository(application: Application) {
                     Log.d("TAG_J_ERROR", it.localizedMessage)
                 })
         )
+    }
+
+    fun cleanCompositeDisposable(){
+        compositeDisposable.clear()
     }
 
 }

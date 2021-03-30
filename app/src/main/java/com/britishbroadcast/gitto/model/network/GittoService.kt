@@ -26,7 +26,7 @@ interface GittoService {
     fun getGitUserRepositoryCommits(@Path(USER_NAME) userName: String, @Path(REPO_NAME) repoName: String): Single<GitUserCommit>
 
     @GET(API_PATH_PRIVATE_REPO)
-    fun getGitUserPrivateRepo(@Header("Authorization") authorization: String): Single<GitResponse>
+    fun getGitUserPrivateRepo(@Header("Authorization") authorization: String): Single<String>
 
 
     @Headers("Accept: application/json")

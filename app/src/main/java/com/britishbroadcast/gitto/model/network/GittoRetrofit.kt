@@ -52,7 +52,7 @@ class GittoRetrofit {
 
         return Retrofit.Builder()
             .baseUrl(GIT_TOKEN_REQUEST_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
@@ -68,7 +68,7 @@ class GittoRetrofit {
     fun getGitUserRepositoryCommits(userName: String, repositoryName: String): Single<GitUserCommit> =
         gittoService.getGitUserRepositoryCommits(userName, repositoryName)
 
-    fun getGitUserPrivateRepo(authorization: String): Single<GitResponse> = gittoService.getGitUserPrivateRepo(authorization)
+    fun getGitUserPrivateRepo(authorization: String): Single<String> = gittoService.getGitUserPrivateRepo(authorization)
 
     fun getAccessToken(clientID: String, clientSecret: String, code: String): Single<AccessToken> =
         gittoAccessTokenService.getAccessToken(clientID, clientSecret, code)
