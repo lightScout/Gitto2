@@ -80,7 +80,7 @@ class SplashScreenFragment(
 
         // If the user has just sign-in or registered through github
         // Chooser layout will be dismissed and the user will be directed to the home screen
-        if (uri != null && uri.toString().startsWith(GIT_REDIRECT_URI)) {
+        if (uri != null && uri.toString().startsWith(GIT_REDIRECT_URI) && !isLogout) {
             encryptedSharedPreferences.edit()
                 .putString("GIT_HUB_TOKEN", uri.getQueryParameter("code")).apply()
 //            Log.d("TAG_J", "token:${uri.getQueryParameter("code")} ")
@@ -90,44 +90,43 @@ class SplashScreenFragment(
                     it
                 )
             }
-            gittoViewModel.getRepository().gitResponseLiveData.observe(
+            gittoViewModel.getRepository().gitPrivateRepoUser.observe(
                 viewLifecycleOwner,
                 Observer {
-                    splashScreenInterface.updateMainActivityUI(it[0][0].owner.login)
+                    splashScreenInterface.updateMainActivityUI(it)
 
                 })
             Toast.makeText(context, "Successfully sign-in with GitHub!", Toast.LENGTH_SHORT).show()
 
-        } else if (isLogout){
-
-        callChooserLayout(animFadeIn)
-        }
-        else {
+        } else {
             // If not, app logo animation will happen and chooser layout will be presented after that
             lifecycleScope.launch {
 
-                // Logo animation section
-                binding.logoImageView.setImageResource(R.drawable.logo)
-                val startLogAni: Job = launch {
-                    Log.d("TAG_J", "start animation in progress")
+                if(!isLogout){
+                    // Logo animation section
+                    binding.logoImageView.setImageResource(R.drawable.logo)
+                    val startLogAni: Job = launch {
+                        Log.d("TAG_J", "start animation in progress")
 
-                    binding.logoImageView.animation =
-                        AnimationUtils.loadAnimation(thisContext, android.R.anim.fade_in)
-                    binding.logoImageView.visibility = View.VISIBLE
-                    delay(3000)
+                        binding.logoImageView.animation =
+                            AnimationUtils.loadAnimation(thisContext, android.R.anim.fade_in)
+                        binding.logoImageView.visibility = View.VISIBLE
+                        delay(3000)
+                    }
+                    startLogAni.join()
+
+                    val endLogoAni: Job = launch {
+                        Log.d("TAG_J", "end animation in progress")
+                        binding.logoImageView.animation =
+                            animFadeOut
+                        binding.logoImageView.visibility = View.GONE
+                        delay(1000)
+                    }
+                    endLogoAni.join()
+
+                    Log.d("TAG_J", "animation have ended")
                 }
-                startLogAni.join()
 
-                val endLogoAni: Job = launch {
-                    Log.d("TAG_J", "end animation in progress")
-                    binding.logoImageView.animation =
-                        animFadeOut
-                    binding.logoImageView.visibility = View.GONE
-                    delay(1000)
-                }
-                endLogoAni.join()
-
-                Log.d("TAG_J", "animation have ended")
 
                 // Only show chooser section if no 'currentUser'
                 if (FirebaseAuth.getInstance().currentUser?.isEmailVerified == true || encryptedSharedPreferences.getString(

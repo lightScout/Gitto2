@@ -30,6 +30,8 @@ class GittoRepository(application: Application) {
 
     val gitRepositoryLiveData = MutableLiveData<List<GitResponse>>()
 
+    val gitPrivateRepoUser = MutableLiveData<String>()
+
     val gitCommitsLiveData = MutableLiveData<List<GitUserCommitItem>>()
 
     var gitResponseList = mutableListOf<GitResponse>()
@@ -87,6 +89,10 @@ class GittoRepository(application: Application) {
 
     }
 
+    fun clearDB(){
+        gittoDataBase.clearAllTables()
+    }
+
     fun getGitUserRepoCommits(userName: String, repoName: String) {
         compositeDisposable.add(
             gittoRetrofit.getGitUserRepositoryCommits(userName, repoName)
@@ -111,8 +117,8 @@ class GittoRepository(application: Application) {
                     val gitResponse = Gson().fromJson(it, GitResponse::class.java)
                     var gittoData = GittoData(gitResponse[0].owner.login, it)
                     gittoDataBase.gittoDAO().insertGittoItem(gittoData)
-                    gitResponseList.add(gitResponse)
-                    gitResponseLiveData.postValue(gitResponseList)
+                    gitPrivateRepoUser.postValue(gitResponse[0].owner.login)
+
 //
 //                    Log.d("TAG_X_PRIVATE", it[0].owner.login)
 //                    Log.d("TAG_X_PRIVATE", "${it[0].private}")

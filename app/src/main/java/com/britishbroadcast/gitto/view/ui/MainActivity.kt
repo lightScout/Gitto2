@@ -1,6 +1,7 @@
 package com.britishbroadcast.gitto.view.ui
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.viewpager.widget.ViewPager
@@ -23,6 +25,11 @@ import com.britishbroadcast.gitto.view.fragment.RepositoriesFragment
 import com.britishbroadcast.gitto.view.fragment.SettingsFragment
 import com.britishbroadcast.gitto.view.fragment.SplashScreenFragment
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.security.GeneralSecurityException
 import java.time.LocalDateTime
@@ -182,6 +189,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
 
     override fun logout() {
+        Log.d("TAG_J", "logout: ")
         binding.mainViewPager.animation =  AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
         binding.mainNavigationView.animation =  AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
         binding.mainViewPager.visibility = View.INVISIBLE
@@ -191,16 +199,41 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
                 AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
             binding.mainFrameLayout.visibility = View.VISIBLE
 
-            val newSplashScreenFragment = SplashScreenFragment(intent, encryptedSharedPreferences, true)
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out,
-                    android.R.anim.fade_in,
-                    android.R.anim.fade_out
-                ).replace(R.id.main_frameLayout, newSplashScreenFragment)
-                .addToBackStack(splashScreenFragment.tag)
-                .commit()
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            val newSplashScreenFragment =
+                SplashScreenFragment(intent, encryptedSharedPreferences, true)
+
+            FirebaseAuth.getInstance().signOut()
+
+            var cleanDone = false
+            lifecycleScope.launch {
+                Log.d("TAG_J", "logout: coroutineScope")
+                while (!cleanDone) {
+                    Log.d("TAG_J", "cleanDone: $cleanDone")
+                    val job: Deferred<Boolean> = async {
+                        encryptedSharedPreferences.edit()
+                            .putString("GIT_HUB_TOKEN", "").apply()
+                        sharedPreferences.edit().putString("DATE_PREF", "").apply()
+                        true
+                    }
+                    cleanDone = job.await()
+                }
+                Log.d("TAG_J", "cleanDone: $cleanDone")
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                    ).replace(R.id.main_frameLayout, newSplashScreenFragment)
+                    .addToBackStack(splashScreenFragment.tag)
+                    .commit()
+
+            }
+
+
+
+            gittoViewModel.getRepository().clearDB()
         }, 2000)
 
     }
