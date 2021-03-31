@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     }
 
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun checkLastApiCall(userName: String) {
         val prevDate = sharedPreferences.getString("DATE_PREF", "")
@@ -125,9 +126,11 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
         }
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d("TAG_J", "onDestroy: ")
+
 
     }
 

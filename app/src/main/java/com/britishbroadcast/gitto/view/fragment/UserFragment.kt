@@ -2,6 +2,7 @@ package com.britishbroadcast.gitto.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,10 @@ class UserFragment(val userFragmentDelete: HomeFragment): Fragment(), UserItemAd
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("TAG_J", "onDestroyView: UserFragment")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,6 +59,7 @@ class UserFragment(val userFragmentDelete: HomeFragment): Fragment(), UserItemAd
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("TAG_J", "onDestroy: User FRAG")
         gittoViewModel.getRepository().gitRepositoryLiveData.removeObservers(this)
     }
 

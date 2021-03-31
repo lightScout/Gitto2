@@ -2,9 +2,11 @@ package com.britishbroadcast.gitto.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -14,11 +16,12 @@ import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.view.adapter.UserItemAdapter
 import com.britishbroadcast.gitto.view.ui.MainActivity
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
+import kotlinx.android.synthetic.*
 
 class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, RepositoriesFragment.RepositoryInterface{
 
     private lateinit var binding: HomeFragmentLayoutBinding
-    private var userFragment = UserFragment(this)
+
     private var repositoryFragment = RepositoriesFragment(this)
     private var commitsFragment = CommitsFragment()
 
@@ -33,17 +36,19 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var userFragment = UserFragment(this)
+
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out,
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                ).add(binding.homeFrameLayout.id, userFragment)
+                .addToBackStack(null)
+                .commit()
 
 
-        parentFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out,
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-            ).replace(binding.homeFrameLayout.id, userFragment)
-            .addToBackStack(null)
-            .commit()
 
 
 

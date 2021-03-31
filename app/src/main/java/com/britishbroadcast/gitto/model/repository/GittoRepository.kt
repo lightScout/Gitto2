@@ -91,6 +91,7 @@ class GittoRepository(application: Application) {
 
     fun clearDB(){
         gittoDataBase.clearAllTables()
+        gitResponseList.clear()
     }
 
     fun getGitUserRepoCommits(userName: String, repoName: String) {
@@ -118,11 +119,10 @@ class GittoRepository(application: Application) {
                     var gittoData = GittoData(gitResponse[0].owner.login, it)
                     gittoDataBase.gittoDAO().insertGittoItem(gittoData)
                     gitPrivateRepoUser.postValue(gitResponse[0].owner.login)
+                    gitResponseList.add(gitResponse)
+                    gitResponseLiveData.postValue(gitResponseList)
 
-//
-//                    Log.d("TAG_X_PRIVATE", it[0].owner.login)
-//                    Log.d("TAG_X_PRIVATE", "${it[0].private}")
-                    //gitPrivateResponseLiveData.postValue(it)
+
 //                    compositeDisposable.clear()
                 }, {
                     Log.d("TAG_J_error", it.localizedMessage)
@@ -145,8 +145,5 @@ class GittoRepository(application: Application) {
         )
     }
 
-    fun cleanCompositeDisposable() {
-        compositeDisposable.clear()
-    }
 
 }

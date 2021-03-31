@@ -44,6 +44,11 @@ class UserItemAdapter(var owners: MutableList<GitResponse>, val userItemDelegate
         }
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        Log.d("TAG_J", "onDestroyView: UserFragment")
+    }
+
     override fun getItemCount(): Int = owners.size
 
     fun updateOwners(owners: List<GitResponse>){

@@ -62,7 +62,6 @@ class GittoViewModel(application: Application) : AndroidViewModel(application) {
 
         }
 
-        gittoRepository.cleanCompositeDisposable()
 
 
     }
