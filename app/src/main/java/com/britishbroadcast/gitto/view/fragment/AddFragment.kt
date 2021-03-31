@@ -38,6 +38,7 @@ class AddFragment: Fragment(), SearchUserItemAdapter.SearchUserItemDelegate {
         super.onViewCreated(view, savedInstanceState)
         binding.mainRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.mainRecyclerView.adapter = searchUserItemAdapter
+
         binding.searchButton.setOnClickListener {
             if(validSearch()){
                 gittoViewModel.searchUserByName(binding.searchEditText.text.toString().trim())

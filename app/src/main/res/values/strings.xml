@@ -26,4 +26,7 @@
     <string name="repository_count_text">Repository count: %s</string>
     <string name="commits_count_text">Commits count: %s</string>
     <string name="last_updated_text">Last updated: %s</string>
+    <string name="repositories_title_text">Repositories</string>
+    <string name="commits_title_text">Commits</string>
+    <string name="authenticated_text">Authenticated</string>
 </resources>

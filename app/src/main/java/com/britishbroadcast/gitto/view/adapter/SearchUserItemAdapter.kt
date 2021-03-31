@@ -2,6 +2,7 @@ package com.britishbroadcast.gitto.view.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Adapter
@@ -38,6 +39,8 @@ class SearchUserItemAdapter(var usersList: List<Item>, val searchUserItemDelegat
 
 
         holder.binding.apply {
+            repoCountTextview.visibility = View.INVISIBLE
+            privateRepositoryCheckbox.visibility = View.INVISIBLE
 
             usersList[position].let {item ->
                 holder.itemView.setOnClickListener {
@@ -45,7 +48,7 @@ class SearchUserItemAdapter(var usersList: List<Item>, val searchUserItemDelegat
                     Toast.makeText(holder.itemView.context,"${item.login} added successfully!", Toast.LENGTH_SHORT).show()
                 }
                 Log.d("TAG_J", "onBindViewHolder: ${item.login}")
-                userNameTextview.text = item.login
+                userNameTextview.text = "User: ${item.login}"
                 Glide.with(userAvatarImageview)
                         .setDefaultRequestOptions(RequestOptions.circleCropTransform())
                         .load(item.avatar_url)

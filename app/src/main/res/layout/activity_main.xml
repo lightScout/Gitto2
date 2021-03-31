@@ -39,6 +39,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/main_menu"
         android:visibility="invisible"
-        />
+        app:itemIconTint="@drawable/bottom_color_selector"
+        app:itemTextColor="@drawable/bottom_color_selector"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

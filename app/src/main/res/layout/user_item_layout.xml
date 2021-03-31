@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="25dp"
             android:layout_margin="@dimen/value_8dp"
-            android:text="Private"
+            android:text="@string/authenticated_text"
             android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/user_name_textview"
             app:layout_constraintEnd_toEndOf="parent"
