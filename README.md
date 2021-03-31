@@ -1,4 +1,4 @@
-Android application that pulls all repositories from all group members(3) git users
+Android application that pulls repositories from all group members(3) git users
 - When a user clicks on a repository the app display all the commits made on that repository
 - The application only sends the initial requests once every 24 hours, other calls use cached responses
 - Application implement MVVM architecture and uses RxJava observables for displaying the data.
