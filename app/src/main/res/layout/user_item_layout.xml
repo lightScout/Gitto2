@@ -5,6 +5,7 @@
     android:layout_margin="8dp"
     app:cardElevation="@dimen/value_8dp"
     app:cardCornerRadius="@dimen/layout_margin_16dp"
+    app:cardBackgroundColor="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -27,13 +28,38 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:text="@string/user_name_text"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/user_avatar_imageview"
-            tools:text="User name here:"/>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="User name:" />
+
+        <TextView
+            android:id="@+id/repo_count_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/value_8dp"
+            android:textColor="@color/white"
+            android:text="@string/repository_count_text"
+            app:layout_constraintStart_toEndOf="@id/user_avatar_imageview"
+            app:layout_constraintTop_toBottomOf="@id/user_name_textview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Repository count:"/>
+
+        <CheckBox
+            android:id="@+id/private_repository_checkbox"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_margin="@dimen/value_8dp"
+            android:text="Private"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/user_name_textview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:enabled="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

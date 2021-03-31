@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
+import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.UserItemLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.view.fragment.UserFragment
@@ -31,7 +32,12 @@ class UserItemAdapter(var owners: MutableList<GitResponse>, val userItemDelegate
         holder.binding.apply {
             owners[position].let {
 
-                userNameTextview.text = it[0].owner.login
+                userNameTextview.text = holder.binding.root.context.getString(R.string.user_name_text, it[0].owner.login)
+                repoCountTextview.text = holder.binding.root.context.getString(R.string.repository_count_text, it.size.toString())
+                it.forEach { repo ->
+                    if (repo.private == true)
+                        privateRepositoryCheckbox.isChecked = true
+                }
                 Glide.with(userAvatarImageview)
                         .setDefaultRequestOptions(RequestOptions.circleCropTransform())
                     .load(it[0].owner.avatar_url)

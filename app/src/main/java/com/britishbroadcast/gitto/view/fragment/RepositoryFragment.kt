@@ -44,6 +44,7 @@ class RepositoriesFragment(val repositoryFragmentDelegate: RepositoryInterface):
                         repositoriesItemAdapter.updateRepositories(gitResp)
                 }
             })
+
         }
     }
 
@@ -51,6 +52,7 @@ class RepositoriesFragment(val repositoryFragmentDelegate: RepositoryInterface):
         repositoryFragmentDelegate.displayCommitsFragment()
         gittoViewModel.getRepository().getGitUserRepoCommits(login, name)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -22,4 +22,8 @@
     <string name="continue_button_text">Continue</string>
     <string name="reg_success_title_text">Success!</string>
     <string name="logout_button_text">Logout</string>
+    <string name="user_name_text">User:  %s</string>
+    <string name="repository_count_text">Repository count: %s</string>
+    <string name="commits_count_text">Commits count: %s</string>
+    <string name="last_updated_text">Last updated: %s</string>
 </resources>
