@@ -22,8 +22,6 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
 
     private lateinit var binding: HomeFragmentLayoutBinding
 
-    private var repositoryFragment = RepositoriesFragment(this)
-    private var commitsFragment = CommitsFragment()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,13 +46,10 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                 .addToBackStack(userFragment.tag)
                 .commit()
 
-
-
-
-
     }
 
     override fun displayRepositoriesFragment(login: String) {
+        val newRepositoryFragment = RepositoriesFragment(this)
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(
                 android.R.anim.fade_in,
@@ -62,16 +57,17 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
-            .replace(binding.homeFrameLayout.id, repositoryFragment.also{
+            .replace(binding.homeFrameLayout.id, newRepositoryFragment.also{
                 val bundle = Bundle()
                 bundle.putString("USER", login)
                 it.arguments = bundle
             })
-            .addToBackStack(repositoryFragment.tag)
+            .addToBackStack(newRepositoryFragment.tag)
             .commit()
     }
 
     override fun displayCommitsFragment() {
+        val newCommitsFragment = CommitsFragment()
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(
                 android.R.anim.fade_in,
@@ -79,7 +75,7 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
-            .replace(binding.homeFrameLayout.id, commitsFragment)
+            .replace(binding.homeFrameLayout.id, newCommitsFragment)
             .addToBackStack(null)
             .commit()
     }

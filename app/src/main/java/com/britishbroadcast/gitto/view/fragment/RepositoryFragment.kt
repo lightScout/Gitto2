@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -18,7 +19,9 @@ class RepositoriesFragment(val repositoryFragmentDelegate: RepositoryInterface):
         fun displayCommitsFragment()
     }
 
-    private lateinit var binding: RepositoriesFragmentLayoutBinding
+    private var baseBinding: RepositoriesFragmentLayoutBinding? = null
+    private val referenceBinding: RepositoriesFragmentLayoutBinding get() = baseBinding ?: throw  IllegalStateException("Trying to access the binding outside of the view lifecycle.")
+
     private val repositoriesItemAdapter = RepositoriesItemAdapter(GitResponse(), this)
     private val gittoViewModel by activityViewModels<GittoViewModel>()
 
@@ -27,14 +30,14 @@ class RepositoriesFragment(val repositoryFragmentDelegate: RepositoryInterface):
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = RepositoriesFragmentLayoutBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View? = RepositoriesFragmentLayoutBinding.inflate(inflater, container, false).also {
+        baseBinding = it
+    }.root
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.repositoriesRecyclerview.adapter = repositoriesItemAdapter
+        referenceBinding.repositoriesRecyclerview.adapter = repositoriesItemAdapter
         arguments?.let{bundle ->
             val username  = bundle.getString("USER")
             gittoViewModel.getRepository().gitRepositoryLiveData.observe(viewLifecycleOwner, Observer {
@@ -53,11 +56,12 @@ class RepositoriesFragment(val repositoryFragmentDelegate: RepositoryInterface):
         gittoViewModel.getRepository().getGitUserRepoCommits(login, name)
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         gittoViewModel.getRepository().gitRepositoryLiveData.removeObservers(this)
-
+        referenceBinding.repositoriesRecyclerview.layoutManager = null
+        referenceBinding.repositoriesRecyclerview.adapter = null
+        baseBinding = null
     }
 
 }

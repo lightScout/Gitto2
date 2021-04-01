@@ -15,20 +15,20 @@ class CommitsFragment: Fragment() {
         fun displayRepositoriesFragment(login: String)
     }
 
-    private lateinit var binding: CommitsFragmentLayoutBinding
+    private var baseBinding: CommitsFragmentLayoutBinding? = null
+    private val referenceBinding: CommitsFragmentLayoutBinding get() = baseBinding ?: throw IllegalStateException("Trying to access the binding outside of the view lifecycle.")
     private val commitItemAdapter = CommitItemAdapter(mutableListOf())
     private val gittoViewModel by activityViewModels<GittoViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = CommitsFragmentLayoutBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  = CommitsFragmentLayoutBinding.inflate(inflater, container, false).also {
+        baseBinding = it
+    }.root
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        referenceBinding.apply {
             commitsRecyclerview.adapter = commitItemAdapter
         }
 
@@ -37,10 +37,13 @@ class CommitsFragment: Fragment() {
         })
 
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        gittoViewModel.getRepository().gitCommitsLiveData.removeObservers(this)
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        gittoViewModel.getRepository().gitCommitsLiveData.removeObservers(this)
+        referenceBinding.commitsRecyclerview.layoutManager = null
+        referenceBinding.commitsRecyclerview.adapter = null
+        baseBinding = null
     }
 
 }
