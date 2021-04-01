@@ -17,7 +17,9 @@ class SettingsFragment(): Fragment() {
     private val gittoViewModel by activityViewModels<GittoViewModel>()
     private lateinit var settingsDelegate: SettingsDelegate
 
-    private lateinit var binding: SettingsFragmentLayoutBinding
+
+    private var baseBinding: SettingsFragmentLayoutBinding? = null
+    private val referenceBinding: SettingsFragmentLayoutBinding get() = baseBinding ?: throw IllegalStateException("Trying to access the binding outside the view lifecycle.")
 
     interface SettingsDelegate{
         fun logout()
@@ -26,15 +28,15 @@ class SettingsFragment(): Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = SettingsFragmentLayoutBinding.inflate(inflater,container, false)
-        return binding.root
-    }
+    ): View = SettingsFragmentLayoutBinding.inflate(inflater,container, false).also {
+        baseBinding = it
+    }.root
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.logoutButton.setOnClickListener {
+        referenceBinding.logoutButton.setOnClickListener {
             settingsDelegate.logout()
         }
 
@@ -44,4 +46,10 @@ class SettingsFragment(): Fragment() {
         super.onAttach(context)
         settingsDelegate = (context as MainActivity)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        baseBinding = null
+    }
+
 }

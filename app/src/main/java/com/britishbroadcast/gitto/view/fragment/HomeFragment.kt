@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.HomeFragmentLayoutBinding
+import com.britishbroadcast.gitto.databinding.UserFragmentLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.view.adapter.UserItemAdapter
 import com.britishbroadcast.gitto.view.ui.MainActivity
@@ -34,7 +35,7 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var userFragment = UserFragment(this)
+        val userFragment =  UserFragment(this)
 
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
