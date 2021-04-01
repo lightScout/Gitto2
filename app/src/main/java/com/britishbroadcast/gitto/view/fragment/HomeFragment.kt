@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.britishbroadcast.gitto.R
 import com.britishbroadcast.gitto.databinding.HomeFragmentLayoutBinding
+import com.britishbroadcast.gitto.databinding.UserFragmentLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.view.adapter.UserItemAdapter
 import com.britishbroadcast.gitto.view.ui.MainActivity
@@ -22,8 +23,6 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
 
     private lateinit var binding: HomeFragmentLayoutBinding
 
-    private var repositoryFragment = RepositoriesFragment(this)
-    private var commitsFragment = CommitsFragment()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +35,7 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var userFragment = UserFragment(this)
+        val userFragment =  UserFragment(this)
 
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -45,16 +44,13 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                     android.R.anim.fade_in,
                     android.R.anim.fade_out
                 ).add(binding.homeFrameLayout.id, userFragment)
-                .addToBackStack(null)
+                .addToBackStack(userFragment.tag)
                 .commit()
-
-
-
-
 
     }
 
     override fun displayRepositoriesFragment(login: String) {
+        val newRepositoryFragment = RepositoriesFragment(this)
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(
                 android.R.anim.fade_in,
@@ -62,16 +58,17 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
-            .replace(binding.homeFrameLayout.id, repositoryFragment.also{
+            .replace(binding.homeFrameLayout.id, newRepositoryFragment.also{
                 val bundle = Bundle()
                 bundle.putString("USER", login)
                 it.arguments = bundle
             })
-            .addToBackStack(null)
+            .addToBackStack(newRepositoryFragment.tag)
             .commit()
     }
 
     override fun displayCommitsFragment() {
+        val newCommitsFragment = CommitsFragment()
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(
                 android.R.anim.fade_in,
@@ -79,7 +76,7 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
-            .replace(binding.homeFrameLayout.id, commitsFragment)
+            .replace(binding.homeFrameLayout.id, newCommitsFragment)
             .addToBackStack(null)
             .commit()
     }
