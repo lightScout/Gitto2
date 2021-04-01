@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     private fun checkLastApiCall(userName: String) {
         val prevDate = sharedPreferences.getString("DATE_PREF", "")
         val currentDate = LocalDateTime.now()
+
         Log.d("TAG_J", "prevDate: ${prevDate.isNullOrEmpty()}")
         if (prevDate.isNullOrEmpty()) {
             Log.d("TAG_J", "checkLastApiCall: timer set")
