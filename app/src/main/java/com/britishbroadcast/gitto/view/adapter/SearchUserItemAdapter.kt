@@ -45,7 +45,6 @@ class SearchUserItemAdapter(var usersList: List<Item>, val searchUserItemDelegat
             usersList[position].let {item ->
                 holder.itemView.setOnClickListener {
                     searchUserItemDelegate.addUser(item.login)
-                    Toast.makeText(holder.itemView.context,"${item.login} added successfully!", Toast.LENGTH_SHORT).show()
                 }
                 Log.d("TAG_J", "onBindViewHolder: ${item.login}")
                 userNameTextview.text = "User: ${item.login}"

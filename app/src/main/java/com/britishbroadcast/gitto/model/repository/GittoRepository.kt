@@ -2,6 +2,7 @@ package com.britishbroadcast.gitto.model.repository
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
@@ -11,8 +12,9 @@ import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.withContext
 
-class GittoRepository(application: Application) {
+class GittoRepository(val application: Application) {
 
     private val gittoRetrofit = GittoRetrofit()
 
@@ -50,10 +52,17 @@ class GittoRepository(application: Application) {
                 .subscribe({
                     // Adding to the DB
                     val gitResponse = Gson().fromJson(it, GitResponse::class.java)
-                    var gittoData = GittoData(gitResponse[0].owner.login, it)
-                    gittoDataBase.gittoDAO().insertGittoItem(gittoData)
-                    gitResponseList.add(gitResponse)
-                    gitResponseLiveData.postValue(gitResponseList)
+                    // API call can be returned with an empty list
+                    if(!gitResponse.isEmpty()){
+                        var gittoData = GittoData(gitResponse[0].owner.login, it)
+                        gittoDataBase.gittoDAO().insertGittoItem(gittoData)
+                        gitResponseList.add(gitResponse)
+                        gitResponseLiveData.postValue(gitResponseList)
+                        Toast.makeText(application,"${gitResponse[0].owner.login} added successfully!", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(application, "User not added. Possibly due to empty profile", Toast.LENGTH_SHORT).show()
+                    }
+
 //                            compositeDisposable.clear()
                 }, {
                     Log.d("TAG_J", it.localizedMessage)
