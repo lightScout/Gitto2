@@ -1,20 +1,19 @@
 package com.britishbroadcast.gitto.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.room.Delete
 import com.britishbroadcast.gitto.databinding.UserFragmentLayoutBinding
 import com.britishbroadcast.gitto.model.data.GitResponse
 import com.britishbroadcast.gitto.view.adapter.UserItemAdapter
-import com.britishbroadcast.gitto.view.ui.MainActivity
 import com.britishbroadcast.gitto.viewmodel.GittoViewModel
+import java.lang.IllegalStateException
 
 class UserFragment(val userFragmentDelete: HomeFragment): Fragment(), UserItemAdapter.UserItemDelegate {
 
@@ -22,26 +21,37 @@ class UserFragment(val userFragmentDelete: HomeFragment): Fragment(), UserItemAd
         fun displayRepositoriesFragment(login: String)
     }
 
-    private lateinit var binding: UserFragmentLayoutBinding
+    // Reference/Ghost patter
+    // Where base var can be null
+    // And reference var can't
+    private var baseBinding: UserFragmentLayoutBinding? = null
+    private val referenceBinding: UserFragmentLayoutBinding get() = baseBinding ?: throw IllegalStateException("Trying to access the binding outside of the view lifecycle.")
+
+
     private val userItemAdapter = UserItemAdapter(mutableListOf(), this)
     private var gitReposeList = listOf<GitResponse>()
     private val gittoViewModel by activityViewModels<GittoViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = UserFragmentLayoutBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = UserFragmentLayoutBinding.inflate(inflater, container, false).also {
+                baseBinding = it
+            }.root
 
-        return binding.root
-    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("TAG_J", "onDestroyView: UserFragment")
+        referenceBinding.userRecyclerview.layoutManager = null
+        referenceBinding.userRecyclerview.adapter = null
+        gittoViewModel.getRepository().gitRepositoryLiveData.removeObservers(this)
+        baseBinding = null
     }
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        referenceBinding.apply {
             userRecyclerview.adapter = userItemAdapter
         }
 
@@ -57,10 +67,5 @@ class UserFragment(val userFragmentDelete: HomeFragment): Fragment(), UserItemAd
         gittoViewModel.getRepository().gitRepositoryLiveData.postValue(gitReposeList)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("TAG_J", "onDestroy: User FRAG")
-        gittoViewModel.getRepository().gitRepositoryLiveData.removeObservers(this)
-    }
 
 }

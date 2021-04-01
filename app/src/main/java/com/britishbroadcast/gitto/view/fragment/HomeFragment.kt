@@ -45,7 +45,7 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                     android.R.anim.fade_in,
                     android.R.anim.fade_out
                 ).add(binding.homeFrameLayout.id, userFragment)
-                .addToBackStack(null)
+                .addToBackStack(userFragment.tag)
                 .commit()
 
 
@@ -67,7 +67,7 @@ class HomeFragment: Fragment(), UserFragment.UserFragmentInterface, Repositories
                 bundle.putString("USER", login)
                 it.arguments = bundle
             })
-            .addToBackStack(null)
+            .addToBackStack(repositoryFragment.tag)
             .commit()
     }
 
