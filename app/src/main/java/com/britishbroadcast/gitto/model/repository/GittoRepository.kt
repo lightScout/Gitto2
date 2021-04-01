@@ -7,6 +7,7 @@ import androidx.room.Room
 import com.britishbroadcast.gitto.model.DataBase.GittoDataBase
 import com.britishbroadcast.gitto.model.data.*
 import com.britishbroadcast.gitto.model.network.GittoRetrofit
+import com.britishbroadcast.gitto.util.DebugLogger
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -56,7 +57,8 @@ class GittoRepository(application: Application) {
                     gitResponseLiveData.postValue(gitResponseList)
 //                            compositeDisposable.clear()
                 }, {
-                    Log.d("TAG_J", it.localizedMessage)
+
+                    DebugLogger(it.localizedMessage)
                 })
         )
 
@@ -75,7 +77,7 @@ class GittoRepository(application: Application) {
                     gitSearchResponseLiveData.postValue(it)
                     compositeDisposable.clear()
                 }, {
-                    Log.d("TAG_J", it.localizedMessage)
+                    DebugLogger(it.localizedMessage)
                 })
         )
     }
@@ -103,7 +105,7 @@ class GittoRepository(application: Application) {
                     gitCommitsLiveData.postValue(it)
                     compositeDisposable.clear()
                 }, {
-                    Log.d("TAG_J", it.localizedMessage)
+                    DebugLogger(it.localizedMessage)
                 })
         )
     }
@@ -125,7 +127,7 @@ class GittoRepository(application: Application) {
 
 //                    compositeDisposable.clear()
                 }, {
-                    Log.d("TAG_J_error", it.localizedMessage)
+                    DebugLogger(it.localizedMessage)
                 })
         )
     }
@@ -136,11 +138,11 @@ class GittoRepository(application: Application) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.d("TAG_J", "token ${it.accessToken}")
+                    DebugLogger("token ${it.accessToken}")
                     getGitUserPrivateRepo("token ${it.accessToken}")
 //                    compositeDisposable.clear()
                 }, {
-                    Log.d("TAG_J_ERROR", it.localizedMessage)
+                    DebugLogger(it.localizedMessage)
                 })
         )
     }
