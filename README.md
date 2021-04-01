@@ -5,6 +5,6 @@ Android application that pulls repositories from all group members(3) git users
 - Application uses one activity with multiple fragments. All tied to the same view model
 - All recycler view items are animated
 - Animated splash screen.
-- Uses CardView across your application UI
+- CardView is used across UI
 - Orientation locked to portrait
-- Git Firebase Authentication - oAuth
+- Git/Firebase Authentication - oAuth (Through the use of Intent)
